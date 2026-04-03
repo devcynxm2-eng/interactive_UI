@@ -1,0 +1,93 @@
+{
+  "equations": [
+    {
+      "operands": [-1, 2],
+      "operators": ["*"],
+      "answer": 4,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 2,
+      "display": "__ * 2 = 4"
+    },
+    {
+      "operands": [-1, 3],
+      "operators": ["*"],
+      "answer": 9,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * 3 = 9"
+    },
+    {
+      "operands": [-1, 4],
+      "operators": ["*"],
+      "answer": 8,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 2,
+      "display": "__ * 4 = 8"
+    },
+    {
+      "operands": [-1, 5],
+      "operators": ["*"],
+      "answer": 15,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * 5 = 15"
+    },
+    {
+      "operands": [-1, 6],
+      "operators": ["*"],
+      "answer": 12,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 2,
+      "display": "__ * 6 = 12"
+    },
+    {
+      "operands": [-1, 7],
+      "operators": ["*"],
+      "answer": 14,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 2,
+      "display": "__ * 7 = 14"
+    },
+    {
+      "operands": [-1, 8],
+      "operators": ["*"],
+      "answer": 24,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * 8 = 24"
+    },
+    {
+      "operands": [-1, 9],
+      "operators": ["*"],
+      "answer": 27,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * 9 = 27"
+    },
+    {
+      "operands": [-1, 3],
+      "operators": ["*"],
+      "answer": 12,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 4,
+      "display": "__ * 3 = 12"
+    },
+    {
+      "operands": [-1, 2],
+      "operators": ["*"],
+      "answer": 10,
+      "equation_length": 4,
+      "blank_value": -1,
+      "hint_value": 5,
+      "display": "__ * 2 = 10"
+    }  ]
+}

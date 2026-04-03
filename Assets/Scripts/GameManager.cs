@@ -1,0 +1,225 @@
+﻿using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
+
+public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance;
+
+    public GameObject TimeUpPanel;
+
+    [Header("References")]
+    public NumEq numEq; 
+    public TextMeshProUGUI timerText;
+
+    [Header("Timer Settings")]
+    public float totalTime = 30f;
+   // public float timerSpeed = 2f;
+
+    private float remainingTime;
+    private bool timerRunning = false;
+
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+
+    void Start()
+    {
+        
+        StartTimer();
+        numEq.ResetState();
+    }
+
+    void Update()
+    {
+        if (timerRunning)
+            UpdateTimer();
+    }
+
+  
+    void StartTimer()
+    {
+        remainingTime = totalTime;
+        timerRunning = true;
+        UpdateTimerUI();
+    }
+
+    void UpdateTimer()
+    {
+        remainingTime -= Time.deltaTime;
+
+        if (remainingTime <= 0f)
+        {
+            remainingTime = 0f;
+            timerRunning = false;
+            Debug.Log("Shoe time up");
+            TimeUpPanel.SetActive(true);
+        }
+
+        UpdateTimerUI();
+    }
+
+
+    void UpdateTimerUI()
+    {
+        int seconds = Mathf.CeilToInt(remainingTime);
+        timerText.text = seconds + "s" +" Remaning";
+    }
+
+
+   
+    public void RestartTimer()
+    {
+        
+        StartTimer();
+        numEq.ResetState();
+
+    }
+
+    public void SelectNumber(int number)
+    {
+        numEq.SelectNumber(number);
+    }
+}
+
+
+
+
+//using UnityEngine;
+//using TMPro;
+//using UnityEngine.UI;
+//using System.Collections;
+
+//public class GameManager : MonoBehaviour
+//{
+//    // Singleton instance
+//    public static GameManager Instance;
+
+//    [Header("UI")]
+//    public TextMeshProUGUI equationText;
+
+//    public TextMeshProUGUI timerText; // <-- Timer UI
+
+//    [Header("Equation Values")]
+//    public int correctAnswer = 4;  // because 4 + 3 = 7
+//    public int secondNumber = 3;
+//    public int result = 7;
+
+//    private int selectedNumber = -1;
+
+//    [Header("UI Colors")]
+//    public Image resultimage;
+//    public Color CG = Color.green;
+//    public Color CR = Color.red;
+
+//    [Header("Timer Settings")]
+//    public float totalTime = 30f; // 30 seconds countdown
+//    private float remainingTime;
+//    private bool timerRunning = false;
+
+//    void Awake()
+//    {
+//        // Singleton logic
+//        if (Instance == null)
+//        {
+//            Instance = this;
+//        }
+//        else
+//        {
+//            Destroy(gameObject);
+//        }
+//    }
+
+//    void Start()
+//    {
+
+
+//        StartTimer();
+//        selectedNumber = -1;
+//        UpdateEquation();
+
+
+//    }
+
+//    void Update()
+//    {
+//        if (timerRunning)
+//        {
+//            UpdateTimer();
+//        }
+//    }
+
+//    // ------------------- Timer Logic -------------------
+//    void StartTimer()
+//    {
+//        remainingTime = totalTime;
+//        timerRunning = true;
+//        UpdateTimerUI();
+//    }
+
+//    void UpdateTimer()
+//    {
+//        remainingTime -= Time.deltaTime;
+
+//        if (remainingTime <= 0f)
+//        {
+//            remainingTime = 0f;
+//            timerRunning = false;
+//            TimerFinished();
+//        }
+
+//        UpdateTimerUI();
+//    }
+
+//    void UpdateTimerUI()
+//    {
+//        if (timerText == null)
+//        {
+//            Debug.LogError("TimerText is NOT assigned!");
+//            return;
+//        }
+
+//        int seconds = Mathf.CeilToInt(remainingTime);
+//        timerText.text = seconds + "s remanining";
+//    }
+
+//    void TimerFinished()
+//    {
+//        Debug.Log("Time's up!");
+//        if (resultimage != null) resultimage.color = CR;
+//    }
+
+//    // ------------------- Equation Logic -------------------
+//    public void SelectNumber(int number)
+//    {
+//        Debug.Log("Number selected: " + number);
+//        selectedNumber = number;
+//        UpdateEquation();
+//        CheckAnswer();
+//    }
+
+//    void UpdateEquation()
+//    {
+//        string firstPart = selectedNumber == -1 ? "" : selectedNumber.ToString();
+//        equationText.text = firstPart;
+//    }
+
+//    void CheckAnswer()
+//    {
+//        if (selectedNumber + secondNumber == result)
+//        {
+//            if (resultimage != null) resultimage.color = CG;
+//        }
+//        else
+//        {
+//            if (resultimage != null) resultimage.color = CR;
+//        }
+//    }
+//}
