@@ -1,10 +1,10 @@
 {
+"equation_length": 5,
   "equations": [
     {
       "operands": [-1, 2],
       "operators": ["/"],
       "answer": 5,
-      "equation_length": 4,
       "blank_value": -1,
       "hint_value": 10,
       "display": "__ / 2 = 5"
@@ -13,7 +13,7 @@
       "operands": [-1, 3],
       "operators": ["/"],
       "answer": 4,
-      "equation_length_": 4,
+     
       "blank_value": -1,
       "hint_value": 12,
       "display": "__ / 3 = 4"
@@ -22,8 +22,7 @@
       "operands": [-1, 4],
       "operators": ["/"],
       "answer": 3,
-      "equation_length": 4,
-      "blank_value": -1,
+          "blank_value": -1,
       "hint_value": 12,
       "display": "__ / 4 = 3"
     },
@@ -31,8 +30,7 @@
       "operands": [-1, 5],
       "operators": ["/"],
       "answer": 2,
-      "equation_length": 4,
-      "blank_value": -1,
+          "blank_value": -1,
       "hint_value": 10,
       "display": "__ / 5 = 2"
     },
@@ -40,8 +38,7 @@
       "operands": [-1, 6],
       "operators": ["/"],
       "answer": 3,
-      "equation_length": 4,
-      "blank_value": -1,
+           "blank_value": -1,
       "hint_value": 18,
       "display": "__ / 6 = 3"
     },
@@ -49,8 +46,7 @@
       "operands": [-1, 7],
       "operators": ["/"],
       "answer": 2,
-      "equation_length": 4,
-      "blank_value": -1,
+          "blank_value": -1,
       "hint_value": 14,
       "display": "__ / 7 = 2"
     },
@@ -58,7 +54,7 @@
       "operands": [-1, 4],
       "operators": ["/"],
       "answer": 4,
-      "equation_length": 4,
+     
       "blank_value": -1,
       "hint_value": 16,
       "display": "__ / 4 = 4"
@@ -67,8 +63,7 @@
       "operands": [-1, 3],
       "operators": ["/"],
       "answer": 6,
-      "equation_length": 4,
-      "blank_value": -1,
+           "blank_value": -1,
       "hint_value": 18,
       "display": "__ / 3 = 6"
     },
@@ -76,8 +71,7 @@
       "operands": [-1, 5],
       "operators": ["/"],
       "answer": 4,
-      "equation_length": 4,
-      "blank_value": -1,
+            "blank_value": -1,
       "hint_value": 20,
       "display": "__ / 5 = 4"
     },
@@ -85,7 +79,7 @@
       "operands": [-1, 2],
       "operators": ["/"],
       "answer": 9,
-      "equation_length": 4,
+      
       "blank_value": -1,
       "hint_value": 18,
       "display": "__ / 2 = 9"

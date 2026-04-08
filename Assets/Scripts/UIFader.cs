@@ -63,7 +63,7 @@ public class UIFader : MonoBehaviour
     public void SetVisible(bool visible)
     {
         gameObject.SetActive(true); // ensure active to allow fading
-        StopAllCoroutines();
+       // StopAllCoroutines();
         fadeLoopCoroutine = StartCoroutine(FadeCanvasGroup(canvasGroup, canvasGroup.alpha, visible ? 1f : 0f, fadeDuration));
     }
 }

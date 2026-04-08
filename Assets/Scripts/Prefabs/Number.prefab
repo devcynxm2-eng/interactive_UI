@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 310}
+  m_SizeDelta: {x: 250, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6262750189557260957
 CanvasRenderer:
@@ -112,7 +112,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.94359994, y: 0.5604127}
-  m_SizeDelta: {x: 286.164, y: 293.6627}
+  m_SizeDelta: {x: 244.8, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2820355940074189649
 CanvasRenderer:
@@ -391,14 +391,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628566990f45d4c47adce440208bc19d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  duration: 0.5
   blankImage: {fileID: 6447787480985017023}
+  completepanel_Txt: {fileID: 0}
+  Completepanel: {fileID: 0}
+  greencorrectimage: {fileID: 0}
   correctImage: {fileID: 3236852843341722481}
   wrongImage: {fileID: 6545848089170633862}
   resultText: {fileID: 7826727730038684398}
-  CG: {r: 0, g: 1, b: 0, a: 1}
-  CR: {r: 1, g: 0, b: 0, a: 1}
+  rectTransform: {fileID: 0}
+  redonwrong: {fileID: 0}
   secondNumber: 3
   result: 7
+  gamemanager: {fileID: 0}
+  progressBarController: {fileID: 0}
+  resettimer: {fileID: 0}
+  slideInPosition: {x: 0, y: 0}
+  slideOutPosition: {x: 0, y: -500}
+  slideDuration: 0.5
 --- !u!1 &8397496648356138489
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +445,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.7593918, y: -0.57530373}
-  m_SizeDelta: {x: 300, y: 310}
+  m_SizeDelta: {x: 250, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6553690423113420501
 CanvasRenderer:
@@ -523,7 +533,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 310}
+  m_SizeDelta: {x: 250, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8094092203878059036
 CanvasRenderer:

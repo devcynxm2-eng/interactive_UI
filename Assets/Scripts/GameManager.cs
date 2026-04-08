@@ -11,17 +11,22 @@ public class GameManager : MonoBehaviour
 
     public GameObject TimeUpPanel;
 
+    [Header("Panels")]
+    public GameObject gamePanel;
+
     [Header("References")]
-    public NumEq numEq; 
+    public NumEq numEq;
     public TextMeshProUGUI timerText;
 
     [Header("Timer Settings")]
     public float totalTime = 30f;
-   // public float timerSpeed = 2f;
 
     private float remainingTime;
     private bool timerRunning = false;
 
+    // ── CHANGED: track previous panel state ──
+    private bool wasPanelActive = false;
+    public int eqdata;
     void Awake()
     {
         if (Instance == null)
@@ -32,19 +37,49 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
-        StartTimer();
-        numEq.ResetState();
+        eqdata = EquationManager.currentEquationLength;
+        TimeUpPanel.SetActive(false);
+        timerRunning = false;
+        UpdateTimerUI();
+        numEq.ResetStatemgr();
     }
 
     void Update()
     {
+        // ── CHANGED: automatically detect when panel becomes active ──
+        bool isPanelActive = gamePanel.activeSelf;
+
+        if (isPanelActive && !wasPanelActive)
+        {
+            // Panel just became active — start timer
+            ResetAndStartTimer();
+        }
+        else if (!isPanelActive && wasPanelActive)
+        {
+            // Panel just became inactive — stop and reset timer
+            timerRunning = false;
+            remainingTime = totalTime;
+            UpdateTimerUI();
+        }
+
+        wasPanelActive = isPanelActive;
+        // ────────────────────────────────────────────────────────
+
         if (timerRunning)
             UpdateTimer();
     }
 
-  
-    void StartTimer()
+    public void OpenGamePanel()
+    {
+        gamePanel.SetActive(true);
+    }
+
+    public void CloseGamePanel()
+    {
+        gamePanel.SetActive(false);
+    }
+
+    void ResetAndStartTimer()
     {
         remainingTime = totalTime;
         timerRunning = true;
@@ -59,37 +94,38 @@ public class GameManager : MonoBehaviour
         {
             remainingTime = 0f;
             timerRunning = false;
-            Debug.Log("Shoe time up");
+            Debug.Log("Show time up");
             TimeUpPanel.SetActive(true);
         }
 
         UpdateTimerUI();
     }
 
-
     void UpdateTimerUI()
     {
         int seconds = Mathf.CeilToInt(remainingTime);
-        timerText.text = seconds + "s" +" Remaning";
+        timerText.text = seconds + "s" + " Remaining";
     }
 
-
-   
     public void RestartTimer()
     {
-        
-        StartTimer();
-        numEq.ResetState();
-
+        ResetAndStartTimer();
+        numEq.ResetStatemgr();
     }
 
     public void SelectNumber(int number)
     {
-        numEq.SelectNumber(number);
+        if (EquationManager.currentEquationLength == 5)
+        {
+            numEq.SelectNumber(number);
+        }
+        else if (EquationManager.currentEquationLength == 7)
+        {
+            numEq.SelectNumberdouble(number);
+        }
+
     }
 }
-
-
 
 
 //using UnityEngine;
