@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class NumberButton : MonoBehaviour
@@ -9,6 +9,9 @@ public class NumberButton : MonoBehaviour
     private Button button;
     public int eqdata;
 
+    // using other script
+
+    public SoundManager soundManager;
 
     void Start()
     {
@@ -23,17 +26,9 @@ public class NumberButton : MonoBehaviour
 
     void OnClick()
     {
-
+        soundManager.PlayButtonClick();
         GameManager.Instance?.SelectNumber(number);
-        //if (eqdata == 5)
-        //{
-        //    Debug.Log("number clickked ============> " + number);
-        //    GameManager.Instance?.SelectNumber(number);
-        //}
-        //else if(eqdata == 7)
-        //{
-        //    Debug.Log("number clickked ============> " + number);
-        //    numEq?.SelectNumberdouble(number);
-        //}
+        
+
     }
 }

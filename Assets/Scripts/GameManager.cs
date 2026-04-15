@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameObject TimeUpPanel;
+    public ProgressBarController ProgressBarController;
 
     [Header("Panels")]
     public GameObject gamePanel;
@@ -21,12 +22,18 @@ public class GameManager : MonoBehaviour
     [Header("Timer Settings")]
     public float totalTime = 30f;
 
+  
+
+
     private float remainingTime;
     private bool timerRunning = false;
 
     // ── CHANGED: track previous panel state ──
     private bool wasPanelActive = false;
     public int eqdata;
+
+
+
     void Awake()
     {
         if (Instance == null)
@@ -40,6 +47,9 @@ public class GameManager : MonoBehaviour
         eqdata = EquationManager.currentEquationLength;
         TimeUpPanel.SetActive(false);
         timerRunning = false;
+
+
+
         UpdateTimerUI();
         numEq.ResetStatemgr();
     }
@@ -88,12 +98,16 @@ public class GameManager : MonoBehaviour
 
     void UpdateTimer()
     {
-        remainingTime -= Time.deltaTime;
+
+        
+        remainingTime -= 1 * Time.deltaTime ; // 👈 speed applied
 
         if (remainingTime <= 0f)
         {
             remainingTime = 0f;
             timerRunning = false;
+            numEq.cleartextfield();        // ← ADD THIS
+            numEq.ResetBothBlanks();
             Debug.Log("Show time up");
             TimeUpPanel.SetActive(true);
         }
@@ -110,7 +124,14 @@ public class GameManager : MonoBehaviour
     public void RestartTimer()
     {
         ResetAndStartTimer();
+        numEq.ResetBothBlanks();
         numEq.ResetStatemgr();
+    }
+
+    public void RestartTimerforeqdble()
+    {
+        ResetAndStartTimer();
+        
     }
 
     public void SelectNumber(int number)
@@ -125,6 +146,22 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+
+   public void OnNextButtonPressed()
+{
+    TimeUpPanel.SetActive(false);
+
+        // Hide complete panel if showing
+    ResetAndStartTimer();
+    numEq.ResetCompleteUI();
+    ProgressBarController.restartprogress();
+    numEq.cleartextfield();
+    numEq.ResetBothBlanks();
+    EquationManager.Instance.OnCorrectAnswer();
+}
+
+
 }
 
 

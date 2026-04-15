@@ -8,12 +8,10 @@ public class TimeUpPanelState : MonoBehaviour
     [SerializeField] private GameManager GameManagerObject;
     [SerializeField] private ProgressBarController ProgressBarControllerObject;
 
-    // ── CHANGED: added CanvasGroup for fading ──
     private CanvasGroup canvasGroup;
 
     private void Awake()
     {
-        // ── CHANGED: get or auto-add CanvasGroup ──
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
@@ -22,34 +20,46 @@ public class TimeUpPanelState : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("TimeUpPanel Shown ✅");
-        TryAgainButton.onClick.AddListener(TryAgain);
 
-        // ── CHANGED: fade in when panel activates ──
+        if (TryAgainButton != null)
+            TryAgainButton.onClick.AddListener(TryAgain);
+
         canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, 0.5f).SetEase(Ease.OutQuad);
+
+        canvasGroup.DOFade(1f, 0.5f)
+            .SetEase(Ease.OutQuad)
+            .SetLink(gameObject); // 🔥 auto-kill safety
     }
 
     private void OnDisable()
     {
-        TryAgainButton.onClick.RemoveListener(TryAgain);
+        if (TryAgainButton != null)
+            TryAgainButton.onClick.RemoveListener(TryAgain);
 
-        // ── CHANGED: kill any running tween when disabled ──
         canvasGroup.DOKill();
     }
 
     private void TryAgain()
     {
-        // ── CHANGED: fade out first, then hide and restart ──
-        canvasGroup.DOFade(0f, 0.3f).SetEase(Ease.InQuad).OnComplete(() =>
-        {
-            gameObject.SetActive(false);
-            GameManagerObject.RestartTimer();
-            ProgressBarControllerObject.restartprogress();
-        });
+        // 🔥 safety checks first
+        if (canvasGroup == null) return;
+
+        canvasGroup.DOFade(0f, 0.3f)
+            .SetEase(Ease.InQuad)
+            .SetLink(gameObject)
+            .OnComplete(() =>
+            {
+                // 🔥 extra safety (this fixes your crash)
+                if (GameManagerObject != null)
+                    GameManagerObject.RestartTimer();
+
+                  
+
+                gameObject.SetActive(false);
+            });
+        ProgressBarControllerObject.restartprogress();
     }
 }
-
-
 
 
 //using System.Collections;

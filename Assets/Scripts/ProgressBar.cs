@@ -1,42 +1,98 @@
-using System.Threading;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI; 
+﻿using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class ProgressBarController : MonoBehaviour
 {
-  
-    public Image progressBarFillImage;
-    private float timer = 0.0f;
-    public float duration = 10.0f;
+    [SerializeField] private Slider progressSlider;
+    [SerializeField] private float duration = 30f;
 
-    
+    private Tweener fillTweener;
+    private Tweener countdownTweener;
 
-    void Update()
+    void Start()
     {
-
-        if(timer < duration)
+        if (progressSlider == null)
         {
-            timer += Time.deltaTime;
-            //clamp so it never goes above 1
-            float progress = Mathf.Clamp01(1f-(timer/duration));
-
-            progressBarFillImage.fillAmount = progress;
-
-
+            Debug.LogError("ProgressSlider is NOT assigned!");
+            return;
         }
 
+        // Setup slider
+        progressSlider.minValue = 0f;
+        progressSlider.maxValue = 1f;
+        progressSlider.value = 1f;
+        progressSlider.interactable = false;
 
+        StartCountdown();
+    }
+
+    void StartCountdown()
+    {
+        if (progressSlider == null) return;
+
+        // Kill previous tweens safely
+        countdownTweener?.Kill();
+        fillTweener?.Kill();
+
+        countdownTweener = DOTween.To(
+            () => progressSlider.value,
+            x => progressSlider.value = x,
+            0f,
+            duration
+        )
+        .SetEase(Ease.Linear)
+        .SetLink(gameObject) // 🔥 Auto-kill when object destroyed
+        .OnComplete(() =>
+        {
+            // Safety check before calling anything
+            if (this == null || progressSlider == null) return;
+
+            Debug.Log("Progress finished");
+            //restartprogress();
+        });
     }
 
     public void restartprogress()
     {
-        timer = 0f;
+        if (progressSlider == null) return;
 
-        if (progressBarFillImage != null)
-            progressBarFillImage.fillAmount = 1f;
+        // Kill existing tweens
+        countdownTweener?.Kill();
+        fillTweener?.Kill();
+
+        fillTweener = DOTween.To(
+            () => progressSlider.value,
+            x => progressSlider.value = x,
+            1f,
+            0.3f
+        )
+        .SetEase(Ease.OutCubic)
+        .SetLink(gameObject) // 🔥 Important safety
+        .OnComplete(() =>
+        {
+            if (this == null || progressSlider == null) return;
+
+            StartCountdown();
+        });
     }
 
+    // Pause timer
+    public void PauseCountdown()
+    {
+        countdownTweener?.Pause();
+    }
 
+    // Resume timer
+    public void ResumeCountdown()
+    {
+        countdownTweener?.Play();
+    }
 
+    // Cleanup (VERY IMPORTANT)
+    void OnDestroy()
+    {
+        countdownTweener?.Kill();
+        fillTweener?.Kill();
+    }
 }

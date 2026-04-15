@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SliderColorChanger : MonoBehaviour
@@ -9,17 +9,31 @@ public class SliderColorChanger : MonoBehaviour
     public Color normalColor = Color.white;
     public Color zeroColor = Color.gray;
 
+    private bool initialized = false;
+
     void Start()
     {
-        slider.value = 1f;
+        // ❌ IMPORTANT: prevent triggering OnValueChanged during setup
+        slider.onValueChanged.RemoveListener(CheckValue);
+
+        CheckValue(slider.value);
+
         slider.onValueChanged.AddListener(CheckValue);
+
+        initialized = true;
     }
 
     void CheckValue(float value)
     {
-        if (value <= 0)
-            icon.color = zeroColor;
-        else
-            icon.color = normalColor;
+        if (!initialized) return;
+
+        if (icon == null) return;
+
+        icon.color = (value <= 0) ? zeroColor : normalColor;
+    }
+
+    private void OnDestroy()
+    {
+        slider.onValueChanged.RemoveListener(CheckValue);
     }
 }

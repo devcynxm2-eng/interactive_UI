@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 
 
@@ -23,7 +24,16 @@ public class NumEq : MonoBehaviour
     public TMP_Text resultText;
     public TMP_Text resultText2;
     public RectTransform rectTransform;
+    public RectTransform rectTransform2;
     public GameObject redonwrong;
+    public GameObject Cross_Image;
+    public GameObject nextbuttonin_completepanel;
+    //public GameObject change_no_Text;
+
+
+    //testing new approach
+    private int hintValueForBlank2 = -1;
+
 
     [Header("Equation Values")]
     public int secondNumber;
@@ -39,22 +49,59 @@ public class NumEq : MonoBehaviour
     public ProgressBarController progressBarController;
     public NumEq resettimer;
 
-    private int currentBlank = 1;
+    public int CurrentBlank = 1;
 
+   
     [Header("Slide Settings")]
-    public Vector2 slideInPosition = new Vector2(0, 0);
-    public Vector2 slideOutPosition = new Vector2(0, -500);
+    public Vector2 textSlideInPosition = new Vector2(0, 60);    // where the text lands
+    public Vector2 textSlideStartPosition = new Vector2(0, -300); // where text starts (off screen below)
+    
     public float slideDuration = 0.5f;
+   
 
     public int eqdata;
     public Action OnCompletePanelFinished;
 
+
+
+    // simple check 
+    public int hintcheck = 0;
+    //help in check
+    public int chknum;
+    private Vector2 originalPosition;
+
+
+    // taking data from other class
+    public ScoreManager scoreManager;
+    public SoundManager soundManager;
+
+
     private void Start()
     {
+        
         eqdata = EquationManager.currentEquationLength;
         completepanel_Txt.gameObject.SetActive(false);
         correctImage.gameObject.SetActive(false);
+        scoreManager.updateScoreui();
+        originalPosition = rectTransform.anchoredPosition;
     }
+    public int SelectedBlank1
+    {
+        get { return selectedNumber1; }
+    }
+
+   
+    
+
+
+
+
+
+
+
+
+
+    
 
     // ═══════════════════════════════════════════════════════════════
     //   CORE ALGORITHM
@@ -127,35 +174,28 @@ public class NumEq : MonoBehaviour
         switch (op1)
         {
             case "+":
-                // blank1 + blank2 = target
-                // blank2 = target - blank1, need blank2 >= 1 so blank1 < target
-                bool addValid = blank1 >= 1 && blank1 < target;
+                bool addValid = blank1 >= 0 && blank1 < target;
                 Debug.Log($"[IsBlank1Valid] + : blank1={blank1}, target={target}, valid={addValid}");
                 return addValid;
 
             case "-":
-                // blank1 - blank2 = target
-                // blank2 = blank1 - target, need blank2 >= 1 so blank1 > target
-                bool subValid = blank1 >= 1 && blank1 > target;
+                bool subValid = blank1 >= 0 && blank1 > target;
                 Debug.Log($"[IsBlank1Valid] - : blank1={blank1}, target={target}, valid={subValid}");
                 return subValid;
 
             case "*":
-                // blank1 * blank2 = target
-                // blank1 must be a factor of target so blank2 is a whole number
-                bool mulValid = blank1 >= 1 && target % blank1 == 0;
+                // Guard against divide by zero
+                bool mulValid = blank1 == 0 ? target == 0 : (blank1 > 0 && target % blank1 == 0);
                 Debug.Log($"[IsBlank1Valid] * : blank1={blank1}, target={target}, valid={mulValid}");
                 return mulValid;
 
             case "/":
-                // blank1 / blank2 = target
-                // blank1 must be divisible by target  (e.g. 12 / ? = 4  →  blank1 must be multiple of 4)
-                bool divValid = blank1 >= 1 && target != 0 && blank1 % target == 0;
+                bool divValid = blank1 >= 0 && target != 0 && blank1 % target == 0;
                 Debug.Log($"[IsBlank1Valid] / : blank1={blank1}, target={target}, valid={divValid}");
                 return divValid;
 
             default:
-                return blank1 >= 1 && blank1 < target;
+                return blank1 >= 0 && blank1 < target;
         }
     }
 
@@ -176,31 +216,28 @@ public class NumEq : MonoBehaviour
         switch (op1)
         {
             case "+":
-                // blank1 + blank2 must == target exactly
-                bool addValid = blank2 >= 1 && (blank1 + blank2) == target;
+                bool addValid = blank2 >= 0 && (blank1 + blank2) == target;
                 Debug.Log($"[IsBlank2Valid] + : {blank1}+{blank2}={blank1 + blank2}, target={target}, valid={addValid}");
                 return addValid;
 
             case "-":
-                // blank1 - blank2 must == target exactly
-                bool subValid = blank2 >= 1 && (blank1 - blank2) == target;
+                bool subValid = blank2 >= 0 && (blank1 - blank2) == target;
                 Debug.Log($"[IsBlank2Valid] - : {blank1}-{blank2}={blank1 - blank2}, target={target}, valid={subValid}");
                 return subValid;
 
             case "*":
-                // blank1 * blank2 must == target exactly
-                bool mulValid = blank2 >= 1 && (blank1 * blank2) == target;
+                bool mulValid = blank2 >= 0 && (blank1 * blank2) == target;
                 Debug.Log($"[IsBlank2Valid] * : {blank1}*{blank2}={blank1 * blank2}, target={target}, valid={mulValid}");
                 return mulValid;
 
             case "/":
-                // blank1 / blank2 must == target exactly, and divide cleanly
+                // blank2 cannot be 0 for division
                 bool divValid = blank2 != 0 && blank1 % blank2 == 0 && (blank1 / blank2) == target;
                 Debug.Log($"[IsBlank2Valid] / : {blank1}/{blank2}={(blank2 != 0 ? blank1 / blank2 : 0)}, target={target}, valid={divValid}");
                 return divValid;
 
             default:
-                return blank2 >= 1 && (blank1 + blank2) == target;
+                return blank2 >= 0 && (blank1 + blank2) == target;
         }
     }
 
@@ -256,39 +293,70 @@ public class NumEq : MonoBehaviour
         int target = GetTarget(result, secondNumber, op2);
         Debug.Log($"[SelectNumberdouble] number={number}, op1={op1}, op2={op2}, constant={secondNumber}, answer={result}, target={target}");
 
-        if (currentBlank == 1)
+        if (CurrentBlank == 1)
         {
+
+            chknum = number;
             // STEP 2: Is blank1 a valid first pick?
             if (!IsBlank1Valid(number, target, op1))
             {
                 Debug.Log($"[SelectNumberdouble] REJECTED blank1={number}");
-
+                soundManager.PlayWrong();
                 resultText.text = number.ToString();
-                redonwrong.gameObject.SetActive(true);
+                wrongImage.gameObject.SetActive(true);
                 TriggerShake();
+                Cross_Image.gameObject.SetActive(true);
+
                 return;
             }
 
             // blank1 accepted
             selectedNumber1 = number;
-            redonwrong.gameObject.SetActive(false);
-            greencorrectimage.gameObject.SetActive(true);
+            
+
+            // ✅ Calculate blank2 hint value immediately at runtime
+            string op1Temp = EquationManager.Instance.currentData.operators[0];
+            string op2Temp = EquationManager.Instance.currentData.operators[1];
+            int targetTemp = GetTarget(result, secondNumber, op2Temp);
+            hintValueForBlank2 = CalculateBlank2(selectedNumber1, targetTemp, op1Temp);
+            Debug.Log($"[Blank2 Hint Pre-calculated] hintValueForBlank2 = {hintValueForBlank2}");
+            EquationManager.Instance.EnsureValueOnButton(hintValueForBlank2);
+            correctImage.gameObject.SetActive(true);
+            wrongImage.gameObject.SetActive(false);
             resultText.text = number.ToString();
-            currentBlank = 2;
+            CurrentBlank = 2;
+
+            Debug.LogError("=============-------------- > " + selectedNumber1);
+
+            hintcheck ++;
             
-            
-            
+
+            CurrentBlank = 2;
+            if (EquationManager.Instance != null && EquationManager.Instance.HasDoubleHint())
+            {
+                EquationManager.Instance.ShowHintForCurrentBlank();
+            }
+            gamemanager.RestartTimerforeqdble();
+            Debug.LogError("progress bar restarted --------> ");
+            progressBarController.restartprogress();
+
+
+
             Debug.Log($"[SelectNumberdouble] ACCEPTED blank1={number}, waiting for blank2...");
         }
-        else if (currentBlank == 2)
+        else if (CurrentBlank == 2)
         {
             // STEP 3: Does blank2 complete the equation exactly?
             if (!IsBlank2Valid(selectedNumber1, number, target, op1))
             {
+                soundManager.PlayWrong();
                 Debug.Log($"[SelectNumberdouble] REJECTED blank2={number}");
                 resultText2.text = number.ToString();
                 redonwrong.gameObject.SetActive(true);
                 greencorrectimage.gameObject.SetActive(false);
+                //change_no_Text.SetActive(true);
+
+                //scoreManager.Subtractscore(5);
                 TriggerShake();
                 return;
             }
@@ -298,8 +366,32 @@ public class NumEq : MonoBehaviour
             redonwrong.gameObject.SetActive(false);
             greencorrectimage.gameObject.SetActive(true);
             resultText2.text = number.ToString();
-            currentBlank = 1;
+            CurrentBlank = 1;
             Debug.Log($"[SelectNumberdouble] ACCEPTED blank2={number}");
+
+
+
+
+
+            //int expectedSecond;
+
+            //bool isPairCorrect = EquationManager.Instance
+            //    .TryGetPairMatch(selectedNumber1, out expectedSecond);
+
+            //if (isPairCorrect && expectedSecond == selectedNumber2)
+            //{
+            //    Debug.Log("✓ CORRECT (PAIR MATCH)");
+            //    answered = true;
+            //    SetCorrect();
+            //    scoreManager.addscore(5);
+            //}
+            //else
+            //{
+            //    Debug.Log("✗ WRONG (NOT IN PAIR)");
+            //    scoreManager.Subtractscore(5);
+            //    SetWrong();
+            //}
+
 
             // STEP 4: Final correct check
             if (IsCorrect(selectedNumber1, selectedNumber2, target, op1))
@@ -307,12 +399,19 @@ public class NumEq : MonoBehaviour
                 Debug.Log($"[SelectNumberdouble] ✓ CORRECT! {selectedNumber1} {op1} {selectedNumber2} {op2} {secondNumber} = {result}");
                 answered = true;
                 SetCorrect();
+                scoreManager.addscore(5);
+                
+                soundManager.PlayCorrect();
+
             }
             else
             {
                 Debug.Log($"[SelectNumberdouble] ✗ WRONG! {selectedNumber1} {op1} {selectedNumber2} {op2} {secondNumber} ≠ {result}");
                 Debug.Log("-----------------> set wrong debug log <---------------");
+                soundManager.PlayWrong();
                 SetWrong();
+
+
             }
         }
     }
@@ -336,11 +435,14 @@ public class NumEq : MonoBehaviour
         {
             answered = true;
             SetCorrectsingle(text);
-            EquationManager.Instance.OnCorrectAnswer();
+            //EquationManager.Instance.OnCorrectAnswer();
+            scoreManager.addscore(5);
         }
         else
         {
+            
             SetWrongsingle(text);
+            scoreManager.Subtractscore(5);
         }
     }
 
@@ -368,20 +470,20 @@ public class NumEq : MonoBehaviour
     public void SetBlank(int blankIndex)
     {
         answered = false;
-        Debug.LogError("= > " + blankIndex);
+        
 
         if (blankIndex == 1)
         {
             selectedNumber1 = -1;
             if (resultText != null) resultText.text = " ";
-            currentBlank = 1;
+            CurrentBlank = 1;
             blankImage.gameObject.SetActive(true);
         }
         else if (blankIndex == 2)
         {
             selectedNumber2 = -1;
             if (resultText2 != null) resultText2.text = " ";
-            currentBlank = 2;
+            CurrentBlank = 2;
             blankImage.gameObject.SetActive(true);
         }
 
@@ -424,8 +526,14 @@ public class NumEq : MonoBehaviour
 
     public void SetCorrect()
     {
-        gamemanager.RestartTimer();
-        progressBarController.restartprogress();
+
+        soundManager.PlayCorrect();
+
+        EquationManager.Instance.SaveProgress();
+        //gamemanager.RestartTimer();
+        Debug.LogError("progress bar restarted --------> ");
+        //progressBarController.restartprogress();
+      
         blankImage.gameObject.SetActive(false);
         blankImage2.gameObject.SetActive(false);
         correctImage.gameObject.SetActive(true);
@@ -434,7 +542,8 @@ public class NumEq : MonoBehaviour
         resultText.gameObject.SetActive(true);
         resultText2.gameObject.SetActive(true);
         ShowUIForSeconds(1.0f);
-        StartCoroutine(ShowUIThenNext());
+        //StartCoroutine(ShowUIThenNext());
+
     }
 
 
@@ -443,7 +552,10 @@ public class NumEq : MonoBehaviour
 
     public void SetWrong()
     {
-        gamemanager.RestartTimer();
+
+        soundManager.PlayWrong();
+
+        //gamemanager.RestartTimer();
 
         Debug.Log("----------------->  make it red on wrong");
         wrongImage.gameObject.SetActive(true);
@@ -471,8 +583,12 @@ public class NumEq : MonoBehaviour
 
     public void SetCorrectsingle(string text)
     {
-        gamemanager.RestartTimer();
+        soundManager.PlayCorrect();
+        EquationManager.Instance.SaveProgress();
+        //gamemanager.RestartTimer();
+
         progressBarController.restartprogress();
+        Debug.LogError("progress bar restarted --------> ");
         blankImage.gameObject.SetActive(false);
         correctImage.gameObject.SetActive(true);
         wrongImage.gameObject.SetActive(false);
@@ -483,7 +599,8 @@ public class NumEq : MonoBehaviour
 
     public void SetWrongsingle(string text)
     {
-        gamemanager.RestartTimer();
+        soundManager.PlayWrong();
+        //gamemanager.RestartTimer();
         wrongImage.gameObject.SetActive(true);
         redonwrong.SetActive(true);
         blankImage.gameObject.SetActive(false);
@@ -494,14 +611,38 @@ public class NumEq : MonoBehaviour
     }
 
 
-
-
-
-    IEnumerator ShowUIThenNext()
+    public void ResetBothBlanks()
     {
-        yield return new WaitForSeconds(2.5f); // match your animation timing
-        EquationManager.Instance.OnCorrectAnswer();
+        StartCoroutine(ResetAfterWrong());
     }
+
+    private IEnumerator ResetAfterWrong()
+    {
+        yield return new WaitForSeconds(0.8f);
+
+        cleartextfield();
+
+        blankImage.gameObject.SetActive(true);
+        blankImage2.gameObject.SetActive(true);
+        correctImage.gameObject.SetActive(false);
+        correctImage2.gameObject.SetActive(false);
+        wrongImage.gameObject.SetActive(false);
+        redonwrong.SetActive(false);
+        resultText.text = " ";
+        resultText2.text = " ";
+
+        CurrentBlank = 1;
+        selectedNumber1 = -1;
+        selectedNumber2 = -1;
+        answered = false;
+    }
+
+
+    //IEnumerator ShowUIThenNext()
+    //{
+    //    yield return new WaitForSeconds(2.5f); // match your animation timing
+    //    EquationManager.Instance.OnCorrectAnswer();
+    //}
 
     public void ShowUIForSeconds(float duration)
     {
@@ -524,40 +665,39 @@ public class NumEq : MonoBehaviour
 
     private IEnumerator DisplayRoutine(float time)
     {
+        if (completepanel_Txt == null || completepanel_Txt.rectTransform == null)
+            yield break;
+
         yield return new WaitForSeconds(1);
         Completepanel.gameObject.SetActive(true);
 
-        // Make text visible and set starting position
+        // Set starting positions (off screen)
+        completepanel_Txt.rectTransform.anchoredPosition = textSlideStartPosition;
+       
         completepanel_Txt.gameObject.SetActive(true);
-        completepanel_Txt.rectTransform.anchoredPosition = slideOutPosition;
-
-        // Slide in
-        yield return completepanel_Txt.rectTransform
-            .DOAnchorPos(slideInPosition, slideDuration)
+      
+        // Slide text to its position
+        completepanel_Txt.rectTransform
+            .DOAnchorPos(textSlideInPosition, slideDuration)
             .SetEase(Ease.OutBack)
-            .WaitForCompletion(); // wait until slide-in finishes
+            .SetLink(gameObject);
 
-        // Keep text visible for a moment
-        yield return new WaitForSeconds(1f);
+        // Slide button to its own separate position with a slight delay
+       
 
-        // Slide out
-        yield return completepanel_Txt.rectTransform
-            .DOAnchorPos(slideOutPosition, slideDuration)
-            .SetEase(Ease.InBack)
-            .WaitForCompletion(); // wait until slide-out finishes
+        yield return new WaitForSeconds(slideDuration);
 
-        // Hide panel and text
-        completepanel_Txt.gameObject.SetActive(false);
-        Completepanel.gameObject.SetActive(false);
-
-        // Restart timer & progress bar
-        gamemanager.RestartTimer();
-        progressBarController.restartprogress();
+        //gamemanager.RestartTimer();
+        //progressBarController.restartprogress();
     }
-
 
     public void TriggerShake()
     {
+        rectTransform.DOKill();
+
+        // ✅ Reset position first then shake
+        rectTransform.anchoredPosition = originalPosition;
+
         rectTransform.DOShakeAnchorPos(0.5f, new Vector2(20f, 0f), 10, 90f);
     }
 
@@ -566,4 +706,52 @@ public class NumEq : MonoBehaviour
         Completepanel?.gameObject.SetActive(false);
         completepanel_Txt?.gameObject.SetActive(false);
     }
+
+   
+
+    public void cleartextfield()
+    {
+        CurrentBlank = 1;
+        resultText.text = " ";
+        resultText2.text = " ";
+        selectedNumber1 = -1;
+        selectedNumber2 = -1;
+        chknum = -1;
+        hintcheck = 0;
+        hintValueForBlank2 = -1; // ✅ reset
+        redonwrong.gameObject.SetActive(false);
+        correctImage.gameObject.SetActive(false);
+        Cross_Image.gameObject.SetActive(false);
+        wrongImage.gameObject.SetActive(false); 
+        //change_no_Text.gameObject.SetActive(false);
+
+        // ✅ Reset hint state so hint works fresh again
+        EquationManager.Instance.ResetHintState();
+        
+        EquationManager.Instance.ResetAllHints();
+    }
+
+
+
+    private int CalculateBlank2(int blank1, int target, string op1)
+    {
+        switch (op1)
+        {
+            case "+": return target - blank1;
+            case "-": return blank1 - target;
+            case "*": return blank1 != 0 ? target / blank1 : 0;
+            case "/": return target != 0 ? blank1 / target : 0;
+            default: return target - blank1;
+        }
+    }
+
+    public int GetBlank2HintValue()
+    {
+        return hintValueForBlank2;
+    }
+
+
+
+
+
 }

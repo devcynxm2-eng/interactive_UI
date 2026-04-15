@@ -1,0 +1,85 @@
+{
+  "equation_length": 5,
+  "equations": [
+    {
+      "operands": [-1, 4],
+      "operators": ["+"],
+      "answer": 9,
+      "blank_value": -1,
+      "hint_value": 5,
+      "display": "__ + 4 = 9"
+    },
+    {
+      "operands": [-1, 3],
+      "operators": ["-"],
+      "answer": 2,
+      "blank_value": -1,
+      "hint_value": 5,
+      "display": "__ - 3 = 2"
+    },
+    {
+      "operands": [-1, 4],
+      "operators": ["*"],
+      "answer": 20,
+      "blank_value": -1,
+      "hint_value": 5,
+      "display": "__ * 4 = 20"
+    },
+    {
+      "operands": [-1, 5],
+      "operators": ["/"],
+      "answer": 3,
+      "blank_value": -1,
+      "hint_value": 15,
+      "display": "__ / 5 = 3"
+    },
+    {
+      "operands": [-1, 7],
+      "operators": ["+"],
+      "answer": 12,
+      "blank_value": -1,
+      "hint_value": 5,
+      "display": "__ + 7 = 12"
+    },
+    {
+      "operands": [-1, 6],
+      "operators": ["-"],
+      "answer": 4,
+      "blank_value": -1,
+      "hint_value": 10,
+      "display": "__ - 6 = 4"
+    },
+    {
+      "operands": [-1, 3],
+      "operators": ["*"],
+      "answer": 18,
+      "blank_value": -1,
+      "hint_value": 6,
+      "display": "__ * 3 = 18"
+    },
+    {
+      "operands": [-1, 2],
+      "operators": ["/"],
+      "answer": 7,
+      "blank_value": -1,
+      "hint_value": 14,
+      "display": "__ / 2 = 7"
+    },
+    {
+      "operands": [-1, 1],
+      "operators": ["+"],
+      "answer": 8,
+      "blank_value": -1,
+      "hint_value": 7,
+      "display": "__ + 1 = 8"
+    },
+    {
+      "operands": [-1, 8],
+      "operators": ["-"],
+      "answer": 1,
+      "blank_value": -1,
+      "hint_value": 9,
+      "display": "__ - 8 = 1"
+    }
+  ]
+}

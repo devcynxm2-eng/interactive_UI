@@ -7,15 +7,53 @@
       "answer": 8,
       "blank_value": -1,
       "hint_value": 2,
-      "display": "__ + __ + 5 = 8"
+      "display": "__ + __ + 5 = 8",
+      "valid_pairs": [
+        {"a":2},
+        {"a":1}
+      ]
     },
     {
-      "operands": [-1, -1, 4],
-      "operators": ["-", "-"],
-      "answer": 12,
+      "operands": [-1, -1, 6],
+      "operators": ["+", "+"],
+      "answer": 10,
       "blank_value": -1,
-      "hint_value": 2,
-      "display": "__ - __ - 8 = 18"
+      "hint_value": 4,
+      "display": "__ + __ + 6 = 10",
+      "valid_pairs": [
+        {"a":3},
+        {"a":1},
+        {"a":2}
+      ]
+    },
+    {
+      "operands": [-1, -1, 8],
+      "operators": ["-", "-"],
+      "answer": 10,
+      "blank_value": -1,
+      "hint_value": 10,
+      "display": "__ - __ - 8 = 10",
+      "valid_pairs": [
+        {"a":19},
+        {"a":20},
+        {"a":21},
+        {"a":22}
+      ]
+    },
+    {
+      "operands": [-1, -1, 5],
+      "operators": ["-", "-"],
+      "answer": 10,
+      "blank_value": -1,
+      "hint_value": 7,
+      "display": "__ - __ - 5 = 10",
+      "valid_pairs": [
+        {"a":16},
+        {"a":17},
+        {"a":18},
+        {"a":19},
+        {"a":20}
+      ]
     },
     {
       "operands": [-1, -1, 2],
@@ -23,32 +61,115 @@
       "answer": 12,
       "blank_value": -1,
       "hint_value": 2,
-      "display": "__ * __ * 2 = 12"
+      "display": "__ * __ * 2 = 12",
+      "valid_pairs": [
+        {"a":1},
+        {"a":6},
+        {"a":2},
+        {"a":3}
+      ]
+    },
+    {
+      "operands": [-1, -1, 3],
+      "operators": ["*", "*"],
+      "answer": 18,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * __ * 3 = 18",
+      "valid_pairs": [
+        {"a":1},
+        {"a":6},
+        {"a":2},
+        {"a":3}
+      ]
     },
     {
       "operands": [-1, -1, 3],
       "operators": ["/", "/"],
       "answer": 4,
       "blank_value": -1,
-      "hint_value": 2,
-      "display": "__ / __ / 3 = 4"
+      "hint_value": 6,
+      "display": "__ / __ / 3 = 4",
+      "valid_pairs": [
+        {"a":12},
+        {"a":24},
+        {"a":36}
+      ]
     },
- {
+    {
+      "operands": [-1, -1, 2],
+      "operators": ["/", "/"],
+      "answer": 5,
+      "blank_value": -1,
+      "hint_value": 10,
+      "display": "__ / __ / 2 = 5",
+      "valid_pairs": [
+        {"a":10},
+        {"a":20},
+        {"a":30},
+        {"a":40}
+      ]
+    },
+    {
       "operands": [-1, -1, 3],
       "operators": ["*", "/"],
       "answer": 4,
       "blank_value": -1,
       "hint_value": 2,
-      "display": "__ * __ / 3 = 4"
-    }, {
+      "display": "__ * __ / 3 = 4",
+      "valid_pairs": [
+        {"a":1},
+        {"a":12},
+        {"a":2},
+        {"a":6},
+        {"a":3}
+      ]
+    },
+    {
+      "operands": [-1, -1, 2],
+      "operators": ["*", "/"],
+      "answer": 6,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ * __ / 2 = 6",
+      "valid_pairs": [
+        {"a":1},
+        {"a":12},
+        {"a":2},
+        {"a":6},
+        {"a":3}
+      ]
+    },
+    {
       "operands": [-1, -1, 3],
       "operators": ["+", "-"],
       "answer": 4,
       "blank_value": -1,
       "hint_value": 2,
-      "display": "__ + __ - 3 = 4"
+      "display": "__ + __ - 3 = 4",
+      "valid_pairs": [
+        {"a":1},
+        {"a":2},
+        {"a":3},
+        {"a":4},
+        {"a":5}
+      ]
+    },
+    {
+      "operands": [-1, -1, 5],
+      "operators": ["+", "-"],
+      "answer": 6,
+      "blank_value": -1,
+      "hint_value": 3,
+      "display": "__ + __ - 5 = 6",
+      "valid_pairs": [
+        {"a":1},
+        {"a":2},
+        {"a":3},
+        {"a":4},
+        {"a":5},
+        {"a":6}
+      ]
     }
-
-
   ]
 }
