@@ -14,7 +14,7 @@ using Unity.VisualScripting;
 public class Pair
 {
     public int a;
-    
+
 }
 
 [System.Serializable]
@@ -43,7 +43,7 @@ public class EquationManager : MonoBehaviour
 {
     public static EquationManager Instance { get; private set; }
 
-    
+
     public TextAsset[] equationJSONFiles;
 
     [Header("Prefabs in Order (left to right)")]
@@ -83,15 +83,16 @@ public class EquationManager : MonoBehaviour
     private int[] currentHintPair;
     private bool isPairSelected = false;
     private bool doubleHintUsed = false;
+    public Complete_Panel Complete_Panel;
 
-    
     private Coroutine scrollCoroutine;
 
 
     [Header("Scroll Settings")]
     public ScrollRect numberScrollRect; // assign in Inspector
 
-
+    public GameObject leveltext;
+    public GameObject wordlvltext;
 
     [Header("UI")]
     public TMP_Text equationNumberText;
@@ -112,112 +113,20 @@ public class EquationManager : MonoBehaviour
     public TMP_Text totalEquationText;
     public TMP_Text totalsolvedeqText;
     public Slider progressSlider;
+    public int x;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
-    //void Start()
-    //{
-    //    int randomint = UnityEngine.Random.Range(2, 4);
-
-    //    if (randomint == 2)
-    //    {
-    //        //int randomint2 = UnityEngine.Random.Range(2, 4);
-    //        //equationGroups = new List<EquationData>[TwoEquationJSONFiles.Length];
-
-    //        //for (int i = 0; i < TwoEquationJSONFiles.Length; i++)
-    //        //{
-    //        //    equationGroups[i] = new List<EquationData>();
-
-    //        //    if (TwoEquationJSONFiles[i] == null) continue;
-
-    //        //    EquationsListWrapper wrapper = JsonUtility.FromJson<EquationsListWrapper>(TwoEquationJSONFiles[i].text);
-    //        //    if (wrapper != null)
-    //        //    {
-    //        //        // ✅ Print top-level equation_length
-    //        //        Debug.Log($"Group {i} top-level equation_length: {wrapper.equation_length}");
-    //        //        currentEquationLength = wrapper.equation_length;
-    //        //        if (wrapper.equations != null)
-    //        //        {
-    //        //            equationGroups[i].AddRange(wrapper.equations);
-    //        //        }
-    //        //    }
-    //        //}
-
-    //        //currentGroupIndex = 0;
-    //        //currentEquationIndex = 0;
-    //        //LoadNextEquation();
-
-
-    //        equationGroups = new List<EquationData>[ThreeEquationJSONFiles.Length];
-
-    //        for (int i = 0; i < ThreeEquationJSONFiles.Length; i++)
-    //        {
-    //            equationGroups[i] = new List<EquationData>();
-
-    //            if (ThreeEquationJSONFiles[i] == null) continue;
-
-    //            EquationsListWrapper wrapper = JsonUtility.FromJson<EquationsListWrapper>(ThreeEquationJSONFiles[i].text);
-    //            if (wrapper != null)
-    //            {
-    //                // ✅ Print top-level equation_length
-    //                Debug.Log($"Group {i} top-level equation_length: {wrapper.equation_length}");
-    //                currentEquationLength = wrapper.equation_length;
-    //                if (wrapper.equations != null)
-    //                {
-    //                    equationGroups[i].AddRange(wrapper.equations);
-    //                }
-    //            }
-    //        }
-
-    //        currentGroupIndex = 0;
-    //        currentEquationIndex = 0;
-    //        LoadNextEquation();
-
-
-
-    //    }
-    //    else
-    //    {
-
-
-    //        equationGroups = new List<EquationData>[ThreeEquationJSONFiles.Length];
-
-    //        for (int i = 0; i < ThreeEquationJSONFiles.Length; i++)
-    //        {
-    //            equationGroups[i] = new List<EquationData>();
-
-    //            if (ThreeEquationJSONFiles[i] == null) continue;
-
-    //            EquationsListWrapper wrapper = JsonUtility.FromJson<EquationsListWrapper>(ThreeEquationJSONFiles[i].text);
-    //            if (wrapper != null)
-    //            {
-    //                // ✅ Print top-level equation_length
-    //                Debug.Log($"Group {i} top-level equation_length: {wrapper.equation_length}");
-    //                currentEquationLength = wrapper.equation_length;
-    //                if (wrapper.equations != null)
-    //                {
-    //                    equationGroups[i].AddRange(wrapper.equations);
-    //                }
-    //            }
-    //        }
-
-    //        currentGroupIndex = 0;
-    //        currentEquationIndex = 0;
-    //        LoadNextEquation();
-
-
-    //    }
-
-
-
-
-    //}
 
 
     int currentJSONIndex = 0;
+    [Header("UI")]
+    public GameObject wordSolverUI;
+
 
     void Start()
     {
@@ -227,11 +136,14 @@ public class EquationManager : MonoBehaviour
         if (totalEquationText != null)
             totalEquationText.text = totalEquationsInAllJSON.ToString();
 
-        
+
         LoadProgress();
         UpdateSlider();
         //currentJSONIndex = 0;
         LoadJSON(currentJSONIndex);
+
+        x = globalEquationIndex;
+
 
     }
 
@@ -245,7 +157,7 @@ public class EquationManager : MonoBehaviour
         }
 
 
-        numEq.ResetCompleteUI();
+        //Complete_Panel.ResetCompleteUI();
         equationGroups = new List<EquationData>[1]; // only ONE group
 
         equationGroups[0] = new List<EquationData>();
@@ -264,12 +176,22 @@ public class EquationManager : MonoBehaviour
             equationGroups[0].AddRange(wrapper.equations);
         }
 
-        
+
 
         currentGroupIndex = 0;
-        //currentEquationIndex = 0;
+
 
         LoadNextEquation();
+    }
+
+
+    public void showleveltext()
+    {
+        leveltext.gameObject.SetActive(false);
+    }
+    public void wordleveltext()
+    {
+        wordlvltext.gameObject.SetActive(false);
     }
 
 
@@ -299,83 +221,9 @@ public class EquationManager : MonoBehaviour
 
 
     public bool HasDoubleHintAvailable()
-{
-    return currentHintPair != null && !doubleHintUsed;
-}
-
-    //public void OnHintPressed()
-    //{
-    //    if (currentData == null) return;
-
-    //    // SINGLE-BLANK equation
-    //    if (currentEquationLength == 5)
-    //    {
-    //        ShowHintForValue(currentData.hint_value);
-    //        return;
-    //    }
-
-    //    // DOUBLE-BLANK equation
-    //    if (currentEquationLength == 7)
-    //    {
-    //        if (currentData.valid_pairs == null || currentData.valid_pairs.Count == 0)
-    //        {
-    //            Debug.LogWarning("No valid pairs available for this equation.");
-    //            return;
-    //        }
-
-    //        // Step 1: First blank
-    //        if (currentEquationLength == 7)
-    //        {
-    //            if (currentData.valid_pairs == null || currentData.valid_pairs.Count == 0)
-    //            {
-    //                Debug.LogWarning("No valid pairs available for this equation.");
-    //                return;
-    //            }
-
-    //            // Step 1
-    //            if (currentHintStep == 0)
-    //            {
-    //                if (!isPairSelected)
-    //                {
-    //                    var pair = currentData.valid_pairs[UnityEngine.Random.Range(0, currentData.valid_pairs.Count)];
-
-    //                    currentHintPair = new int[] { pair.a, pair.b };
-    //                    isPairSelected = true;
-
-    //                    Debug.Log("Selected NEW Pair → a: " + pair.a + " b: " + pair.b);
-    //                }
-
-    //                ShowHintForValue(currentHintPair[0]);
-
-
-
-
-    //                Debug.Log("STEP 1 DONE");
-
-    //                if (numEq.hintcheck == true)
-    //                {
-    //                    currentHintStep = 1;
-    //                    return;
-    //                    Debug.Log(" current hit step become 1 == > 1 ");
-    //                }
-    //                return;
-    //            }
-
-    //            else if (numEq.hintcheck == true && currentHintStep == 1)
-    //            {
-    //                ShowHintForValue(currentHintPair[1]);
-
-    //                //currentHintStep = 2;
-
-    //                Debug.Log("STEP 2 DONE");
-
-    //            }
-
-    //        }
-    //    }
-    //}
-
-
+    {
+        return currentHintPair != null && !doubleHintUsed;
+    }
 
 
     public void OnHintPressed()
@@ -432,157 +280,6 @@ public class EquationManager : MonoBehaviour
     }
 
 
-
-    //public void OnHintPressed()
-    //{
-    //    if (currentData == null) return;
-
-    //    // SINGLE-BLANK equation
-    //    if (currentEquationLength == 5)
-    //    {
-    //        ShowHintForValue(currentData.hint_value);
-    //        return;
-    //    }
-
-
-
-
-    //    //====>  based on the pair system in json
-    //    //if (currentEquationLength == 7)
-    //    //{
-    //    //    // STEP 1: Blank 1 hint logic (unchanged)
-    //    //    if (numEq.CurrentBlank == 1)
-    //    //    {
-    //    //        if (!isPairSelected)
-    //    //        {
-    //    //            var pair = currentData.valid_pairs[UnityEngine.Random.Range(0, currentData.valid_pairs.Count)];
-    //    //            currentHintPair = new int[] { pair.a, pair.b };
-    //    //            isPairSelected = true;
-    //    //        }
-
-    //    //        if (IsValidHintValue(currentHintPair[0]))
-    //    //        {
-    //    //            ShowHintForValue(currentHintPair[0]);
-    //    //        }
-    //    //        else
-    //    //        {
-    //    //            Debug.LogWarning("Invalid hint value skipped");
-    //    //        }
-    //    //        return;
-    //    //    }
-    //    //    bool IsValidHintValue(int value)
-    //    //    {
-    //    //        foreach (Button btn in numberButtons)
-    //    //        {
-    //    //            NumberButton nb = btn.GetComponent<NumberButton>();
-    //    //            if (nb != null && nb.number == value)
-    //    //                return true;
-    //    //        }
-    //    //        return false;
-    //    //    }
-    //    //    // STEP 2: Blank 2 hint logic (NEW CLEAN RULE)
-    //    //    if (numEq.CurrentBlank == 2)
-    //    //    {
-    //    //        int secondValue;
-    //    //        bool found = TryGetPairMatch(numEq.chknum, out secondValue);
-
-    //    //        if (found)
-    //    //        {
-    //    //            //numEq.change_no_Text.SetActive(false);
-    //    //            ShowHintForValue(secondValue);
-    //    //        }
-    //    //        else
-    //    //        {
-    //    //            //numEq.change_no_Text.SetActive(true);
-    //    //            // No highlight — just the message
-    //    //        }
-    //    //        return;
-    //    //    }
-    //    //}
-
-
-
-
-
-    //    // DOUBLE-BLANK equation
-    //    if (currentEquationLength == 7 && currentData.valid_pairs != null && currentData.valid_pairs.Count > 0)
-    //    {
-
-
-    //        //numEq.change_no_Text.gameObject.SetActive(true);
-    //        int hintValueForBlank2 = -1;
-
-    //        //Check if user already entered something in blank1
-    //        int userValue = numEq.chknum;
-
-    //        //Find matching pair from JSON
-    //        foreach (var pair in currentData.valid_pairs)
-    //        {
-    //            if (pair.a == userValue)
-    //            {
-    //                hintValueForBlank2 = pair.b;
-    //                break;
-    //            }
-    //        }
-
-
-
-    //        // STEP 1: First blank
-    //        if (currentHintStep == 0)
-    //        {
-    //            if (numEq.hintcheck == 0)
-    //            {
-    //                if (!isPairSelected)
-    //                {
-    //                    var pair = currentData.valid_pairs[UnityEngine.Random.Range(0, currentData.valid_pairs.Count)];
-    //                    currentHintPair = new int[] { pair.a, pair.b };
-    //                    isPairSelected = true;
-    //                    //numEq.change_no_Text.SetActive(false);
-    //                    Debug.Log("Selected NEW Pair → a: " + pair.a + " b: " + pair.b);
-    //                }
-
-    //                ShowHintForValue(currentHintPair[0]);
-    //                Debug.Log("STEP 1 DONE: Showing " + currentHintPair[0]);
-    //            }
-    //            //Advance step only if user filled blank 1
-    //            // Only advance step if user entered blank1
-    //            if (numEq.hintcheck == 1)
-    //            {
-    //                currentHintStep = 1;
-    //            }
-
-    //        }
-
-
-
-
-
-    //        if (numEq.hintcheck == 1 && currentHintStep == 1)
-    //        {
-
-
-    //            if (hintValueForBlank2 != -1)
-    //            {
-    //                ShowHintForValue(currentHintPair[1]);
-    //                ShowHintForValue(hintValueForBlank2);
-    //                Debug.Log("STEP 2 DONE: Showing " + hintValueForBlank2 + " for blank2");
-    //            }
-    //            else
-    //            {
-    //                Debug.LogWarning("No matching pair found for user's input in blank1");
-    //            }
-
-    //            //currentHintStep = 2;
-
-    //        }
-    //    }
-
-
-
-
-    //}
-
-
     void SetupNumberButtons()
     {
         List<int> finalNumbers = new List<int>();
@@ -636,41 +333,6 @@ public class EquationManager : MonoBehaviour
             txt.text = value.ToString();
         }
     }
-
-    //private void ShowHintForValue(int targetValue)
-    //{
-    //    if (hintCoroutine != null)
-    //    {
-    //        StopCoroutine(hintCoroutine);
-    //        ResetHintButton();
-    //    }
-
-    //    Button matchedButton = null;
-
-    //    foreach (Button btn in numberButtons)
-    //    {
-    //        NumberButton nb = btn.GetComponent<NumberButton>();
-    //        if (nb != null && nb.number == targetValue)
-    //        {
-    //            matchedButton = btn;
-    //            break;
-    //        }
-    //    }
-
-    //    if (matchedButton == null)
-    //    {
-    //        Debug.LogWarning($"No button found for hint value: {targetValue}");
-    //        return;
-    //    }
-
-    //    currentHintButton = matchedButton;
-
-    //    Image btnImage = matchedButton.GetComponent<Image>();
-    //    if (btnImage != null)
-    //        originalHintButtonColor = btnImage.color;
-
-    //    hintCoroutine = StartCoroutine(HintHighlight(matchedButton));
-    //}
 
 
     private void ShowHintForValue(int targetValue)
@@ -821,8 +483,10 @@ public class EquationManager : MonoBehaviour
 
     public void OnCorrectAnswer()
     {
+
+
+        globalEquationIndex++;
         SaveProgress();
-        
         // ✅ Stop everything and reset on correct answer
         if (scrollCoroutine != null)
         {
@@ -851,6 +515,9 @@ public class EquationManager : MonoBehaviour
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString("progress", json);
         PlayerPrefs.Save();
+
+
+
     }
 
 
@@ -909,7 +576,7 @@ public class EquationManager : MonoBehaviour
     IEnumerator NextEquationDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        
+
 
     }
 
@@ -918,10 +585,15 @@ public class EquationManager : MonoBehaviour
     {
         if (equationNumberText != null)
             equationNumberText.text = (globalEquationIndex + 1).ToString();
+
+        Debug.Log("globalEquationIndex = " + globalEquationIndex);
         if (totalsolvedeqText != null)
-            totalsolvedeqText.text = globalEquationIndex.ToString();
+            totalsolvedeqText.text = (globalEquationIndex+1).ToString();
+
+        Debug.Log("globalEquationIndex 2 1 = " + globalEquationIndex);
         UpdateSlider();
         ResetAllHints();
+
         // If all groups are exhausted, loop back to addition
         if (currentGroupIndex >= equationGroups.Length)
         {
@@ -931,7 +603,7 @@ public class EquationManager : MonoBehaviour
         }
 
         List<EquationData> currentGroup = equationGroups[currentGroupIndex];
-       
+
         // If current group is finished, move to next operator group
         if (currentEquationIndex >= currentGroup.Count)
         {
@@ -946,25 +618,12 @@ public class EquationManager : MonoBehaviour
         // Load current equation in sequence
         currentData = currentGroup[currentEquationIndex];
         currentEquationIndex++;
-        globalEquationIndex++;
+
 
         currentHintStep = 0;
         isPairSelected = false;
         currentHintPair = null;
         numEq.hintcheck = 0;
-
-
-        //currentHintPair = null;
-        //doubleHintUsed = false;
-        //if (currentEquationLength == 7 &&
-        //    currentData.valid_pairs != null &&
-        //    currentData.valid_pairs.Count > 0)
-        //{
-        //    Pair selectedPair = currentData.valid_pairs[UnityEngine.Random.Range(0, currentData.valid_pairs.Count)];
-        //    currentHintPair = new int[] { selectedPair.a, selectedPair.b };
-        //}
-
-
 
 
 
@@ -1195,6 +854,7 @@ public class EquationManager : MonoBehaviour
         progressSlider.value = Mathf.Clamp01(progress);
     }
 
+
     MathOperator SymbolToEnum(string symbol)
     {
         switch (symbol)
@@ -1207,153 +867,3 @@ public class EquationManager : MonoBehaviour
         }
     }
 }
-
-
-
-
-
-
-//using System;
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using TMPro;
-
-//[Serializable]
-//public class EquationData
-//{
-//    public int[] operands;
-//    public string[] operators;
-//    public int answer;
-//    public int blank_value;
-//}
-
-//[Serializable]
-//public class EquationsListWrapper
-//{
-//    public EquationData[] equations;
-//}
-
-//public class EquationManager : MonoBehaviour
-//{
-//    public static EquationManager Instance { get; private set; }
-
-//    [Header("JSON Files (assign all 4)")]
-//    public TextAsset[] equationJSONFiles; // drag all 4 JSON files here in Inspector
-
-//    [Header("Prefabs in Order (left to right)")]
-//    public NumEq blankPrefab;
-//    public MathOperatorDisplay operatorPrefab;
-//    public TMP_Text operandText;
-//    public MathOperatorDisplay equalPrefab;
-//    public TMP_Text answerText;
-
-//    [Header("Settings")]
-//    [Tooltip("Avoid repeating the same equation twice in a row")]
-//    public bool avoidRepeat = true;
-
-//    private List<EquationData> allEquations = new List<EquationData>();
-//    private EquationData currentData;
-//    private int lastIndex = -1;
-
-//    void Awake()
-//    {
-//        if (Instance == null) Instance = this;
-//        else Destroy(gameObject);
-//    }
-
-//    void Start()
-//    {
-//        // Load all equations from all JSON files into one combined list
-//        foreach (TextAsset jsonFile in equationJSONFiles)
-//        {
-//            if (jsonFile == null) continue;
-
-//            EquationsListWrapper wrapper = JsonUtility.FromJson<EquationsListWrapper>(jsonFile.text);
-
-//            if (wrapper != null && wrapper.equations != null)
-//                allEquations.AddRange(wrapper.equations);
-//        }
-
-//        Debug.Log($"Total equations loaded: {allEquations.Count}");
-//        LoadRandomEquation();
-//    }
-
-//    // ─────────────────────────────────────────
-//    //  Public: called by NumEq on correct answer
-//    // ─────────────────────────────────────────
-//    public void OnCorrectAnswer()
-//    {
-//        StartCoroutine(NextEquationDelay(1.0f));
-//    }
-
-//    IEnumerator NextEquationDelay(float delay)
-//    {
-//        yield return new WaitForSeconds(delay);
-//        LoadRandomEquation();
-//    }
-
-//    // ─────────────────────────────────────────
-//    //  Pick a random equation (no immediate repeat)
-//    // ─────────────────────────────────────────
-//    void LoadRandomEquation()
-//    {
-//        int index;
-
-//        if (allEquations.Count == 1)
-//        {
-//            index = 0;
-//        }
-//        else
-//        {
-//            do
-//            {
-//                index = UnityEngine.Random.Range(0, allEquations.Count);
-//            }
-//            while (avoidRepeat && index == lastIndex);
-//        }
-
-//        lastIndex = index;
-//        currentData = allEquations[index];
-//        AssignData();
-//    }
-
-//    // ─────────────────────────────────────────
-//    //  Push data into UI elements
-//    // ─────────────────────────────────────────
-//    void AssignData()
-//    {
-//        int knownOperand = 0;
-//        string operatorSymbol = currentData.operators[0];
-
-//        for (int i = 0; i < currentData.operands.Length; i++)
-//        {
-//            if (currentData.operands[i] != currentData.blank_value)
-//                knownOperand = currentData.operands[i];
-//        }
-
-//        blankPrefab.ResetState();
-
-//        blankPrefab.secondNumber = knownOperand;
-//        blankPrefab.result = currentData.answer;
-//        blankPrefab.SetOperatorType(SymbolToEnum(operatorSymbol));
-//        blankPrefab.SetBlank();
-
-//        operatorPrefab.SetOperator(SymbolToEnum(operatorSymbol));
-//        operandText.text = knownOperand.ToString();
-//        equalPrefab.SetOperator(MathOperator.Equal);
-//        answerText.text = currentData.answer.ToString();
-//    }
-
-//    MathOperator SymbolToEnum(string symbol)
-//    {
-//        switch (symbol)
-//        {
-//            case "+": return MathOperator.Add;
-//            case "-": return MathOperator.Subtract;
-//            case "*": return MathOperator.Multiply;
-//            case "/": return MathOperator.Divide;
-//            default: return MathOperator.Add;
-//        }
-//    }
-//}

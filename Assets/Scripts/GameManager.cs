@@ -1,38 +1,19 @@
 ﻿using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
-using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public GameObject TimeUpPanel;
-    public ProgressBarController ProgressBarController;
-
     [Header("Panels")]
     public GameObject gamePanel;
+    public GameObject TimeUpPanel;
 
     [Header("References")]
     public NumEq numEq;
-    public TextMeshProUGUI timerText;
-
-    [Header("Timer Settings")]
-    public float totalTime = 30f;
-
-  
-
-
-    private float remainingTime;
-    private bool timerRunning = false;
-
-    // ── CHANGED: track previous panel state ──
-    private bool wasPanelActive = false;
-    public int eqdata;
-
-
+    public ProgressBar ProgressBarController;
+    public Complete_Panel Complete_Panel;
+    public restart_timer timer; // 👈 reference to timer script
 
     void Awake()
     {
@@ -44,41 +25,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        eqdata = EquationManager.currentEquationLength;
         TimeUpPanel.SetActive(false);
-        timerRunning = false;
-
-
-
-        UpdateTimerUI();
         numEq.ResetStatemgr();
     }
 
-    void Update()
-    {
-        // ── CHANGED: automatically detect when panel becomes active ──
-        bool isPanelActive = gamePanel.activeSelf;
-
-        if (isPanelActive && !wasPanelActive)
-        {
-            // Panel just became active — start timer
-            ResetAndStartTimer();
-        }
-        else if (!isPanelActive && wasPanelActive)
-        {
-            // Panel just became inactive — stop and reset timer
-            timerRunning = false;
-            remainingTime = totalTime;
-            UpdateTimerUI();
-        }
-
-        wasPanelActive = isPanelActive;
-        // ────────────────────────────────────────────────────────
-
-        if (timerRunning)
-            UpdateTimer();
-    }
-
+    // ================================
+    // PANEL CONTROL
+    // ================================
     public void OpenGamePanel()
     {
         gamePanel.SetActive(true);
@@ -89,210 +42,70 @@ public class GameManager : MonoBehaviour
         gamePanel.SetActive(false);
     }
 
-    void ResetAndStartTimer()
-    {
-        remainingTime = totalTime;
-        timerRunning = true;
-        UpdateTimerUI();
-    }
-
-    void UpdateTimer()
-    {
-
-        
-        remainingTime -= 1 * Time.deltaTime ; // 👈 speed applied
-
-        if (remainingTime <= 0f)
-        {
-            remainingTime = 0f;
-            timerRunning = false;
-            numEq.cleartextfield();        // ← ADD THIS
-            numEq.ResetBothBlanks();
-            Debug.Log("Show time up");
-            TimeUpPanel.SetActive(true);
-        }
-
-        UpdateTimerUI();
-    }
-
-    void UpdateTimerUI()
-    {
-        int seconds = Mathf.CeilToInt(remainingTime);
-        timerText.text = seconds + "s" + " Remaining";
-    }
-
-    public void RestartTimer()
-    {
-        ResetAndStartTimer();
-        numEq.ResetBothBlanks();
-        numEq.ResetStatemgr();
-    }
-
-    public void RestartTimerforeqdble()
-    {
-        ResetAndStartTimer();
-        
-    }
-
+    // ================================
+    // NUMBER INPUT
+    // ================================
     public void SelectNumber(int number)
     {
         if (EquationManager.currentEquationLength == 5)
-        {
             numEq.SelectNumber(number);
-        }
         else if (EquationManager.currentEquationLength == 7)
-        {
             numEq.SelectNumberdouble(number);
-        }
+    }
+
+    // ================================
+    // NEXT BUTTON
+    // ================================
+    public void OnNextButtonPressed()
+    {
+        TimeUpPanel.SetActive(false);
+        timer.RestartTimerExternally(); // 👈 restart timer
+        Complete_Panel.ResetCompleteUI();
+        ProgressBarController.restartprogress();
+
+        numEq.cleartextfield();
+        numEq.ResetBothBlanks();
+
+
+
+        EquationManager.Instance.OnCorrectAnswer();
+
+
+
+
 
     }
 
 
-   public void OnNextButtonPressed()
-{
-    TimeUpPanel.SetActive(false);
+    public void OnNextWordButtonPressed()
+    {
+        TimeUpPanel.SetActive(false);
 
-        // Hide complete panel if showing
-    ResetAndStartTimer();
-    numEq.ResetCompleteUI();
-    ProgressBarController.restartprogress();
-    numEq.cleartextfield();
-    numEq.ResetBothBlanks();
-    EquationManager.Instance.OnCorrectAnswer();
+        timer.RestartTimerExternally();
+
+        Complete_Panel.ResetCompleteUI();
+        ProgressBarController.restartprogress();
+
+        // reset word state FIRST
+        WordPuzzleManager.Instance.ClearTiles();
+        WordPuzzleManager.Instance.ResetWordState();
+        WordPuzzleManager.Instance.SaveProgress();
+        // THEN load next word
+        WordPuzzleManager.Instance.LoadNextWord();
+    }
+
+
+    // ================================
+    // CALLED BY TIMER
+    // ================================
+    public void OnTimeUp()
+    {
+        TimeUpPanel.SetActive(true);
+
+        numEq.cleartextfield();
+        numEq.ResetBothBlanks();
+        // Word reset - same pattern
+        WordPuzzleManager.Instance.ClearTiles();
+        WordPuzzleManager.Instance.ResetWordState();
+    }
 }
-
-
-}
-
-
-//using UnityEngine;
-//using TMPro;
-//using UnityEngine.UI;
-//using System.Collections;
-
-//public class GameManager : MonoBehaviour
-//{
-//    // Singleton instance
-//    public static GameManager Instance;
-
-//    [Header("UI")]
-//    public TextMeshProUGUI equationText;
-
-//    public TextMeshProUGUI timerText; // <-- Timer UI
-
-//    [Header("Equation Values")]
-//    public int correctAnswer = 4;  // because 4 + 3 = 7
-//    public int secondNumber = 3;
-//    public int result = 7;
-
-//    private int selectedNumber = -1;
-
-//    [Header("UI Colors")]
-//    public Image resultimage;
-//    public Color CG = Color.green;
-//    public Color CR = Color.red;
-
-//    [Header("Timer Settings")]
-//    public float totalTime = 30f; // 30 seconds countdown
-//    private float remainingTime;
-//    private bool timerRunning = false;
-
-//    void Awake()
-//    {
-//        // Singleton logic
-//        if (Instance == null)
-//        {
-//            Instance = this;
-//        }
-//        else
-//        {
-//            Destroy(gameObject);
-//        }
-//    }
-
-//    void Start()
-//    {
-
-
-//        StartTimer();
-//        selectedNumber = -1;
-//        UpdateEquation();
-
-
-//    }
-
-//    void Update()
-//    {
-//        if (timerRunning)
-//        {
-//            UpdateTimer();
-//        }
-//    }
-
-//    // ------------------- Timer Logic -------------------
-//    void StartTimer()
-//    {
-//        remainingTime = totalTime;
-//        timerRunning = true;
-//        UpdateTimerUI();
-//    }
-
-//    void UpdateTimer()
-//    {
-//        remainingTime -= Time.deltaTime;
-
-//        if (remainingTime <= 0f)
-//        {
-//            remainingTime = 0f;
-//            timerRunning = false;
-//            TimerFinished();
-//        }
-
-//        UpdateTimerUI();
-//    }
-
-//    void UpdateTimerUI()
-//    {
-//        if (timerText == null)
-//        {
-//            Debug.LogError("TimerText is NOT assigned!");
-//            return;
-//        }
-
-//        int seconds = Mathf.CeilToInt(remainingTime);
-//        timerText.text = seconds + "s remanining";
-//    }
-
-//    void TimerFinished()
-//    {
-//        Debug.Log("Time's up!");
-//        if (resultimage != null) resultimage.color = CR;
-//    }
-
-//    // ------------------- Equation Logic -------------------
-//    public void SelectNumber(int number)
-//    {
-//        Debug.Log("Number selected: " + number);
-//        selectedNumber = number;
-//        UpdateEquation();
-//        CheckAnswer();
-//    }
-
-//    void UpdateEquation()
-//    {
-//        string firstPart = selectedNumber == -1 ? "" : selectedNumber.ToString();
-//        equationText.text = firstPart;
-//    }
-
-//    void CheckAnswer()
-//    {
-//        if (selectedNumber + secondNumber == result)
-//        {
-//            if (resultimage != null) resultimage.color = CG;
-//        }
-//        else
-//        {
-//            if (resultimage != null) resultimage.color = CR;
-//        }
-//    }
-//}

@@ -1,0 +1,16 @@
+{
+  "words": [
+    { "word": "CAT", "image": "cat", "answer": "A" },
+    { "word": "RAT", "image": "rat", "answer": "R" },
+    { "word": "SUN", "image": "sun", "answer": "U" },
+   
+
+    { "word": "FROG", "image": "frog", "answer": "O" },
+    { "word": "FISH", "image": "fish", "answer": "I" },
+ 
+
+    { "word": "APPLE", "image": "apple", "answer": "P" },
+    { "word": "GRAPE", "image": "grape", "answer": "A" }
+   
+  ]
+}

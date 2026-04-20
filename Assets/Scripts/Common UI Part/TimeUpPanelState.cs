@@ -6,10 +6,10 @@ public class TimeUpPanelState : MonoBehaviour
 {
     [SerializeField] private Button TryAgainButton;
     [SerializeField] private GameManager GameManagerObject;
-    [SerializeField] private ProgressBarController ProgressBarControllerObject;
+    [SerializeField] private ProgressBar ProgressBarControllerObject;
 
     private CanvasGroup canvasGroup;
-
+    public restart_timer timer;
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
@@ -50,10 +50,10 @@ public class TimeUpPanelState : MonoBehaviour
             .OnComplete(() =>
             {
                 // 🔥 extra safety (this fixes your crash)
-                if (GameManagerObject != null)
-                    GameManagerObject.RestartTimer();
+                if (timer != null)
+                    timer.RestartTimerExternally();
 
-                  
+
 
                 gameObject.SetActive(false);
             });
