@@ -87,13 +87,14 @@ public class EquationManager : MonoBehaviour
 
     private Coroutine scrollCoroutine;
 
+    public AllCompletePanel allCompletePanel;
 
     [Header("Scroll Settings")]
     public ScrollRect numberScrollRect; // assign in Inspector
 
     public GameObject leveltext;
     public GameObject wordlvltext;
-
+    public ScoreManager scoreManager;
     [Header("UI")]
     public TMP_Text equationNumberText;
     public int globalEquationIndex = 0;
@@ -109,7 +110,7 @@ public class EquationManager : MonoBehaviour
 
 
     //calculatingall the jasons equation 
-    private int totalEquationsInAllJSON = 0;
+    public int totalEquationsInAllJSON = 0;
     public TMP_Text totalEquationText;
     public TMP_Text totalsolvedeqText;
     public Slider progressSlider;
@@ -143,16 +144,22 @@ public class EquationManager : MonoBehaviour
         LoadJSON(currentJSONIndex);
 
         x = globalEquationIndex;
-
+        Debug.Log("--------------instart-----in " + currentEquationIndex);
 
     }
 
     void LoadJSON(int index)
     {
         currentJSONIndex = index;
+        Debug.Log("========== Loadjson start currentindex value ========= " + currentJSONIndex);
         if (index >= equationJSONFiles.Length)
         {
             Debug.Log("All JSONs finished!");
+            if (allCompletePanel != null &&
+         allCompletePanel.IsValidFor(AllCompletePanel.PanelType.Equation))
+            {
+                allCompletePanel.Show();
+            }
             return;
         }
 
@@ -213,7 +220,9 @@ public class EquationManager : MonoBehaviour
                 totalEquationsInAllJSON += wrapper.equations.Length;
             }
         }
-
+        // ✅ Save it immediately so SampleScene can always read it
+        PlayerPrefs.SetInt("TotalEquations", totalEquationsInAllJSON);
+        PlayerPrefs.Save();
         Debug.Log("=======> TOTAL EQUATIONS IN ALL JSON: " + totalEquationsInAllJSON);
     }
 
@@ -226,10 +235,86 @@ public class EquationManager : MonoBehaviour
     }
 
 
+    //public void OnHintPressed()
+    //{
+    //    if (currentData == null) return;
+
+    //    // ── SINGLE BLANK ──
+    //    if (currentEquationLength == 5)
+    //    {
+    //        ShowHintForValue(currentData.hint_value);
+    //        scoreManager.Subtractscore(20);
+    //        return;
+    //    }
+
+    //    // ── DOUBLE BLANK ──
+    //    if (currentEquationLength == 7)
+    //    {
+    //        scoreManager.Subtractscore(20);
+    //        if (currentData.valid_pairs == null || currentData.valid_pairs.Count == 0)
+    //        {
+    //            Debug.LogWarning("No valid pairs in JSON.");
+    //            return;
+    //        }
+
+    //        // BLANK 1 HINT — pick random pair.a from JSON
+    //        if (numEq.CurrentBlank == 1)
+    //        {
+    //            int randomIndex = UnityEngine.Random.Range(0, currentData.valid_pairs.Count);
+    //            Pair randomPair = currentData.valid_pairs[randomIndex];
+
+    //            currentHintPair = new int[] { randomPair.a };
+    //            isPairSelected = true;
+
+    //            Debug.Log($"[Hint Blank1] Showing random pair.a = {randomPair.a}");
+    //            ShowHintForValue(randomPair.a);
+    //            return;
+    //        }
+
+    //        // BLANK 2 HINT — use pre-calculated value from NumEq
+    //        if (numEq.CurrentBlank == 2)
+    //        {
+    //            int hintB = numEq.GetBlank2HintValue();
+
+    //            if (hintB != -1)
+    //            {
+    //                Debug.Log($"[Hint Blank2] Showing calculated value = {hintB}");
+    //                ShowHintForValue(hintB);
+    //            }
+    //            else
+    //            {
+    //                Debug.LogWarning("[Hint Blank2] Value not calculated yet, blank1 not filled.");
+    //            }
+    //            return;
+    //        }
+    //    }
+    //}
+
+
+
     public void OnHintPressed()
     {
         if (currentData == null) return;
 
+        int currentScore = PlayerPrefs.GetInt("Playerscore", 0);
+        if (currentScore <= 0)
+        {
+            // Show ad panel AND pass callback
+            WatchAdPanel.Instance.Show(() =>
+            {
+                // After ad → give hint (no score deduction since they watched an ad)
+                GiveHint();
+            });
+            return;
+        }
+
+        // Normal flow — deduct score then give hint
+        scoreManager.Subtractscore(20);
+        GiveHint();
+    }
+
+    void GiveHint()
+    {
         // ── SINGLE BLANK ──
         if (currentEquationLength == 5)
         {
@@ -251,10 +336,8 @@ public class EquationManager : MonoBehaviour
             {
                 int randomIndex = UnityEngine.Random.Range(0, currentData.valid_pairs.Count);
                 Pair randomPair = currentData.valid_pairs[randomIndex];
-
                 currentHintPair = new int[] { randomPair.a };
                 isPairSelected = true;
-
                 Debug.Log($"[Hint Blank1] Showing random pair.a = {randomPair.a}");
                 ShowHintForValue(randomPair.a);
                 return;
@@ -264,7 +347,6 @@ public class EquationManager : MonoBehaviour
             if (numEq.CurrentBlank == 2)
             {
                 int hintB = numEq.GetBlank2HintValue();
-
                 if (hintB != -1)
                 {
                     Debug.Log($"[Hint Blank2] Showing calculated value = {hintB}");
@@ -514,6 +596,11 @@ public class EquationManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString("progress", json);
+
+
+
+
+
         PlayerPrefs.Save();
 
 
@@ -588,8 +675,11 @@ public class EquationManager : MonoBehaviour
 
         Debug.Log("globalEquationIndex = " + globalEquationIndex);
         if (totalsolvedeqText != null)
-            totalsolvedeqText.text = (globalEquationIndex+1).ToString();
+            totalsolvedeqText.text = (globalEquationIndex).ToString();
 
+        // ✅ Keep PlayerPrefs in sync every equation
+        PlayerPrefs.SetInt("SolvedEquations", globalEquationIndex);
+        PlayerPrefs.Save();
         Debug.Log("globalEquationIndex 2 1 = " + globalEquationIndex);
         UpdateSlider();
         ResetAllHints();
@@ -610,15 +700,18 @@ public class EquationManager : MonoBehaviour
             Debug.Log("Current JSON finished, loading next...");
 
             currentJSONIndex++;
+            currentEquationIndex = 0;
             LoadJSON(currentJSONIndex);
 
             return;
         }
 
         // Load current equation in sequence
+        Debug.Log("--------------before-----in " + currentEquationIndex);
         currentData = currentGroup[currentEquationIndex];
+        Debug.Log("--------------afetr-----in " + currentEquationIndex);
         currentEquationIndex++;
-
+        Debug.Log("--------------moreafter-----in " + currentEquationIndex);
 
         currentHintStep = 0;
         isPairSelected = false;

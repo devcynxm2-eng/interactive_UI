@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -24,10 +25,19 @@ public class GameManager : MonoBehaviour
     }
 
     void Start()
+{
+    if (TimeUpPanel == null)
+        TimeUpPanel = GameObject.Find("TimeUpPanel");
+
+    if (TimeUpPanel == null)
     {
-        TimeUpPanel.SetActive(false);
-        numEq.ResetStatemgr();
+        Debug.LogError("TimeUpPanel not found!");
+        return;
     }
+
+    TimeUpPanel.SetActive(false);
+    numEq.ResetStatemgr();
+}
 
     // ================================
     // PANEL CONTROL
@@ -104,8 +114,10 @@ public class GameManager : MonoBehaviour
 
         numEq.cleartextfield();
         numEq.ResetBothBlanks();
-        // Word reset - same pattern
-        WordPuzzleManager.Instance.ClearTiles();
-        WordPuzzleManager.Instance.ResetWordState();
+        
     }
+
+  
+ 
+    
 }

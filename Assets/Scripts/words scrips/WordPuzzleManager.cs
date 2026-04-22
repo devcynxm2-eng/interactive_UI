@@ -66,7 +66,7 @@ public class WordPuzzleManager : MonoBehaviour
 
 
     [Header("Completion UI")]
-    public GameObject allCompletePanel;
+    //public GameObject allCompletePanel;
 
 
     [Header("Tile Prefabs")]
@@ -88,18 +88,21 @@ public class WordPuzzleManager : MonoBehaviour
 
     public Complete_Panel Complete_Panel;
     public ScoreManager scoreManager;
-    public SoundManager soundManager;
-
+    //public SoundManager soundManager;
+    [Header("otherscriptss")]
     public restart_timer timer;
+    public AllCompletePanel allcompletePanel;
 
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        
     }
 
     void Start()
     {
+        Time.timeScale = 1f;
         LoadAllWords();
         LoadProgress();
 
@@ -110,7 +113,7 @@ public class WordPuzzleManager : MonoBehaviour
         UpdateSlider();
         LoadNextWord();
         scoreManager.updateScoreui();
-        allCompletePanel.gameObject.SetActive(false);
+        //allCompletePanel.gameObject.SetActive(false);
     }
 
     void LoadAllWords()
@@ -132,8 +135,12 @@ public class WordPuzzleManager : MonoBehaviour
         if (currentWordIndex >= allWords.Count)
         {
             timer.StopTimerAndProgress();
-            allCompletePanel.gameObject.SetActive(true);
             Debug.Log("All words completed.");
+            if (allcompletePanel != null &&
+                allcompletePanel.IsValidFor(AllCompletePanel.PanelType.Word))
+            {
+                allcompletePanel.Show();
+            }
             return;
         }
 
@@ -294,7 +301,7 @@ public class WordPuzzleManager : MonoBehaviour
 
         if (exists)
         {
-            scoreManager.addscore(5);
+            scoreManager.addscore(10);
             HandleCorrect(letter);
         }
         else
@@ -303,7 +310,7 @@ public class WordPuzzleManager : MonoBehaviour
 
     void HandleCorrect(char letter)
     {
-        soundManager.PlayCorrect();
+        SoundManager.Instance.PlayCorrect();
         int filledIndex = -1;
 
         for (int i = 0; i < orderedBlankIndices.Count; i++)
@@ -369,12 +376,12 @@ public class WordPuzzleManager : MonoBehaviour
         }
 
         // 4. optional: auto next word
-        // LoadNextWord();  ← only if you want auto progression
+         //LoadNextWord(); // ← only if you want auto progressionh
     }
     // ── Wrong: show pressed letter in blank briefly then clear ──
     void HandleWrong(char letter)
     {
-        soundManager.PlayWrong();
+        SoundManager.Instance.PlayWrong();
         StartCoroutine(ShakeTile(shaking_container.GetComponent<RectTransform>()));
         StartCoroutine(FlashBlankRedWithLetter(letter));
     }
@@ -483,17 +490,60 @@ public class WordPuzzleManager : MonoBehaviour
         }
     }
 
+    
+    //public void OnHintPressed()
+    //{
+    //    if (currentWord == null) return;
+    //    if (blankMap.Count > 0 && orderedBlankIndices.Count > 0)
+    //    {
+    //        scoreManager.Subtractscore(20);
+    //        int idx = orderedBlankIndices[0];
+    //        ShowHintForLetter(blankMap[idx]);
+    //    }
+    //}
+
+
     public void OnHintPressed()
     {
         if (currentWord == null) return;
+
+        int currentScore = PlayerPrefs.GetInt("Playerscore", 0);
+        //int currentScore = PlayerPrefs.GetInt("Playerscore", 0);
+        Debug.Log($"[Hint] Score check: {currentScore}"); // ← ADD THIS
+        if (currentScore <= 0)
+        {
+
+            if (timer != null)
+                timer.StopTimerAndProgress();
+
+
+            // Show ad panel AND pass callback
+            WatchAdPanel.Instance.Show(() =>
+            {
+                // After ad → give hint (no score deduction)
+                GiveWordHint();
+            });
+            return;
+        }
+
+        // Normal flow — deduct score then give hint
+        scoreManager.Subtractscore(20);
+        GiveWordHint();
+    }
+
+    void GiveWordHint()
+    {
         if (blankMap.Count > 0 && orderedBlankIndices.Count > 0)
         {
             int idx = orderedBlankIndices[0];
             ShowHintForLetter(blankMap[idx]);
         }
     }
+    
+        
 
-    void ShowHintForLetter(char letter)
+
+void ShowHintForLetter(char letter)
     {
         if (hintCoroutine != null) { StopCoroutine(hintCoroutine); hintCoroutine = null; }
         if (scrollCoroutine != null) { StopCoroutine(scrollCoroutine); scrollCoroutine = null; }
@@ -642,7 +692,11 @@ public class WordPuzzleManager : MonoBehaviour
 
 
 
-
+    public void OnTimeUp()
+    {
+        ClearTiles();
+        ResetWordState();
+    }
     public void SaveProgress()
     {
         WordProgressData data = new WordProgressData();

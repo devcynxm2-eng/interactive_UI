@@ -68,7 +68,6 @@ public class NumEq : MonoBehaviour
 
     // taking data from other class
     public ScoreManager scoreManager;
-    public SoundManager soundManager;
     public Complete_Panel Complete_Panel;
 
     private void Start()
@@ -234,7 +233,7 @@ public class NumEq : MonoBehaviour
             if (!IsBlank1Valid(number, target, op1))
             {
                 Debug.Log($"[SelectNumberdouble] REJECTED blank1={number}");
-                soundManager.PlayWrong();
+                SoundManager.Instance.PlayWrong();
                 resultText.text = number.ToString();
                 wrongImage.gameObject.SetActive(true);
                 TriggerShake();
@@ -283,7 +282,7 @@ public class NumEq : MonoBehaviour
             // STEP 3: Does blank2 complete the equation exactly?
             if (!IsBlank2Valid(selectedNumber1, number, target, op1))
             {
-                soundManager.PlayWrong();
+                SoundManager.Instance.PlayWrong();
                 Debug.Log($"[SelectNumberdouble] REJECTED blank2={number}");
                 resultText2.text = number.ToString();
                 redonwrong.gameObject.SetActive(true);
@@ -317,16 +316,16 @@ public class NumEq : MonoBehaviour
                 answered = true;
                 SetCorrect();
 
-                scoreManager.addscore(5);
+                scoreManager.addscore(10);
 
-                soundManager.PlayCorrect();
+                SoundManager.Instance.PlayCorrect();
 
             }
             else
             {
                 Debug.Log($"[SelectNumberdouble] ✗ WRONG! {selectedNumber1} {op1} {selectedNumber2} {op2} {secondNumber} ≠ {result}");
                 Debug.Log("-----------------> set wrong debug log <---------------");
-                soundManager.PlayWrong();
+                SoundManager.Instance.PlayWrong();
                 SetWrong();
 
 
@@ -355,13 +354,13 @@ public class NumEq : MonoBehaviour
             SetCorrectsingle(text);
 
 
-            scoreManager.addscore(5);
+            scoreManager.addscore(10);
         }
         else
         {
 
             SetWrongsingle(text);
-            scoreManager.Subtractscore(5);
+            //scoreManager.Subtractscore(5);
         }
     }
 
@@ -446,7 +445,7 @@ public class NumEq : MonoBehaviour
     public void SetCorrect()
     {
 
-        soundManager.PlayCorrect();
+        SoundManager.Instance.PlayCorrect();
 
         EquationManager.Instance.SaveProgress();
         //gamemanager.RestartTimer();
@@ -475,7 +474,7 @@ public class NumEq : MonoBehaviour
     public void SetWrong()
     {
 
-        soundManager.PlayWrong();
+        SoundManager.Instance.PlayWrong();
 
         //gamemanager.RestartTimer();
 
@@ -505,7 +504,7 @@ public class NumEq : MonoBehaviour
 
     public void SetCorrectsingle(string text)
     {
-        soundManager.PlayCorrect();
+        SoundManager.Instance.PlayCorrect();
         EquationManager.Instance.SaveProgress();
         //gamemanager.RestartTimer();
         GameSession.RegisterEquationSolved();
@@ -525,7 +524,7 @@ public class NumEq : MonoBehaviour
 
     public void SetWrongsingle(string text)
     {
-        soundManager.PlayWrong();
+        SoundManager.Instance.PlayWrong();
         //gamemanager.RestartTimer();
         wrongImage.gameObject.SetActive(true);
         redonwrong.SetActive(true);
@@ -640,7 +639,13 @@ public class NumEq : MonoBehaviour
         return hintValueForBlank2;
     }
 
+    public void OnTimeUp()
+    {
+        if (!gameObject.activeInHierarchy) return;
 
+        cleartextfield();
+        ResetBothBlanks();
+    }
 
 
 

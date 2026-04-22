@@ -19,16 +19,16 @@ public class NumberButton : MonoBehaviour
     }
     void Awake()
     {
-        
+
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
     }
 
     void OnClick()
     {
-        soundManager.PlayButtonClick();
+        //soundManager.PlayButtonClick();
         GameManager.Instance?.SelectNumber(number);
-        
+
 
     }
 }

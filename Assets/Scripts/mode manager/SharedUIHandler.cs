@@ -42,4 +42,26 @@ public class SharedUIHandler : MonoBehaviour
                 break;
         }
     }
+
+
+    public void Ontryahgain()
+    {
+        switch (GameSession.Current)
+        {
+            case ActiveGame.Equation:
+                TimeUpPanelState.Instance.TryAgain();
+                break;
+
+            case ActiveGame.Word:
+                TimeUpPanelState.Instance.TryAgainword();
+                break;
+
+            default:
+                Debug.LogWarning("[SharedUIHandler] OnHintPressed — no active game set.");
+                break;
+        }
+    }
+
+
+
 }

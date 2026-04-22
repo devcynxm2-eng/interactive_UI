@@ -204,6 +204,15 @@ public class restart_timer : MonoBehaviour
         if (progressBar != null)
             progressBar.ResumeProgress();
     }
+    public void ResetTimerAndProgress()
+    {
+        remainingTime = totalTime;
+        timerRunning = false;
 
+        UpdateTimerUI();
+
+        if (progressBar != null)
+            progressBar.restartprogress();
+    }
 
 }

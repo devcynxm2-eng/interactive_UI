@@ -123,6 +123,7 @@ public class SoundManager : MonoBehaviour
     // ───── VOLUME ─────
     public void SetMusicVolume(float value)
     {
+        Debug.Log("Music Volume: " + value);
         musicSource.volume = value;
         PlayerPrefs.SetFloat("musicVol", value);
         PlayerPrefs.Save();
@@ -130,6 +131,7 @@ public class SoundManager : MonoBehaviour
 
     public void SetSFXVolume(float value)
     {
+        Debug.Log("Music Volume: " + value);
         sfxSource.volume = value;
         PlayerPrefs.SetFloat("sfxVol", value);
         PlayerPrefs.Save();
