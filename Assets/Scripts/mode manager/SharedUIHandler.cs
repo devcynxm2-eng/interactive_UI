@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// Attach to any GameObject in the scene.
-/// Wire your shared Next button onClick  → OnNextPressed()
-/// Wire your shared Hint button onClick  → OnHintPressed()
-/// </summary>
+
 public class SharedUIHandler : MonoBehaviour
 {
     public void OnNextPressed()

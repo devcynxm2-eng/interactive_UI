@@ -43,14 +43,7 @@ public class GameResetManager : MonoBehaviour
         // ── Word unlock progress ──
         PlayerPrefs.DeleteKey("global_equations_solved"); // ✅ was missing
 
-        // ── Music and SFX settings: optional, uncomment to reset ──
-        // PlayerPrefs.DeleteKey("music");
-        // PlayerPrefs.DeleteKey("sfx");
-        // PlayerPrefs.DeleteKey("musicVol");
-        // PlayerPrefs.DeleteKey("sfxVol");
-
-        // ── Language: keep it ──
-        // PlayerPrefs.DeleteKey("selected_language");
+        
 
         PlayerPrefs.Save();
 

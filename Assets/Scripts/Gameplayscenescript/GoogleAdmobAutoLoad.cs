@@ -49,21 +49,7 @@ public class GoogleAdmobAutoLoad : MonoBehaviour
 
     }
 
-    void Start()
-    {
-        //// ✅ Only initialize MobileAds ONCE ever
-        //if (!isMobileAdsInitialized)
-        //{
-        //    isMobileAdsInitialized = true;
-        //    MobileAds.Initialize(initStatus =>
-        //    {
-        //        Debug.Log("AdMob Initialized");
-        //        LoadBanner();
-        //        LoadInterstitial();
-        //        LoadRewarded();
-        //    });
-        //}
-    }
+   
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
