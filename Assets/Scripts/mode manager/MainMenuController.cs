@@ -14,6 +14,8 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Lock UI")]
     public GameObject wordLockIcon;
+    public GameObject wordLockbtn;
+    public GameObject wordunLockbtn;
     public TMP_Text wordUnlockProgressText;
 
     void Start()
@@ -29,6 +31,13 @@ public class MainMenuController : MonoBehaviour
 
         if (wordLockIcon != null)
             wordLockIcon.SetActive(!wordUnlocked);
+
+        // Toggle buttons (THIS is what you want)
+        if (wordLockbtn != null)
+            wordLockbtn.SetActive(!wordUnlocked);   // show when locked
+
+        if (wordunLockbtn != null)
+            wordunLockbtn.SetActive(wordUnlocked);  // show when unlocked
 
         if (wordUnlockProgressText != null)
         {

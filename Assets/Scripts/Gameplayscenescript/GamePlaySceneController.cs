@@ -19,14 +19,17 @@ public class GamePlaySceneController : MonoBehaviour
     public restart_timer timer;
     public EquationManager equationManager;
 
+    
+
     void Start()
     {
-        ActiveGame activeGame = GameSession.Current; // ✅ fixed
+        ActiveGame activeGame = GameSession.Current;
 
         if (activeGame == ActiveGame.Equation)
         {
             solveEquationPart.SetActive(true);
             equationManagerGO.SetActive(true);
+            
             solveWordPuzzlePart.SetActive(false);
             solvewordCOMPLETEPANEL.SetActive(false);
             wordManagerGO.SetActive(false);
@@ -36,6 +39,7 @@ public class GamePlaySceneController : MonoBehaviour
         {
             solveWordPuzzlePart.SetActive(true);
             wordManagerGO.SetActive(true);
+        
             solveEquationPart.SetActive(false);
             solveEQCOMPLETEPANEL.SetActive(false);
             equationManagerGO.SetActive(false);
@@ -44,6 +48,12 @@ public class GamePlaySceneController : MonoBehaviour
 
         progressBarController.restartprogress();
         timer.RestartTimerExternally();
+
+        // 🔥 ADD THIS — apply font AFTER all objects are active
+        if (LanguageSwitcher.Instance != null)
+        {
+            LanguageSwitcher.Instance.ApplyCurrentLanguage();
+        }
     }
 
     public void OnBackToMenuPressed()

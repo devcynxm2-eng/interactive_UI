@@ -1,0 +1,349 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 6bdc26a566031774ea511925dc92fbe0, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 137648193536
+    m_Localized: menustart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575409647616
+    m_Localized: BuildYourDreamRoom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575430619136
+    m_Localized: Choose a style to get started
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575430619137
+    m_Localized: AI Tech Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813440
+    m_Localized: Robots Gadgets Holograms
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813441
+    m_Localized: Luxury Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813442
+    m_Localized: Sofa Lamp Fine Furniture
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813443
+    m_Localized: Car Lover Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813444
+    m_Localized: Posters Models Racing  Gear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813445
+    m_Localized: Bike Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813446
+    m_Localized: Helmets Jerseys Trophy Wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813447
+    m_Localized: Choose a Room Style First
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813448
+    m_Localized: Lets Build My Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813449
+    m_Localized: My Room
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813450
+    m_Localized: Equations
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813451
+    m_Localized: Solve Math Equation From the Belt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813452
+    m_Localized: Level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813453
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813454
+    m_Localized: Lvl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813455
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813456
+    m_Localized: Sound Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813457
+    m_Localized: Tile taps correct & wrong answers
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813458
+    m_Localized: SFX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813459
+    m_Localized: Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813460
+    m_Localized: Background Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813461
+    m_Localized: Plays during gameplay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813462
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813463
+    m_Localized: Viberation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813464
+    m_Localized: Haptic feedback on tab
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813465
+    m_Localized: 'Theme '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813466
+    m_Localized: Change app color
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813467
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813468
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813469
+    m_Localized: Level Complete!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813470
+    m_Localized: GOLD REWARD -- Pick ONE ITEM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813471
+    m_Localized: Main Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813472
+    m_Localized: All Equation complete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813473
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813474
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813475
+    m_Localized: Time Over
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813476
+    m_Localized: Try Again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813477
+    m_Localized: Complete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813478
+    m_Localized: Next
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813479
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813480
+    m_Localized: Watch Ads to Earn Coins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813481
+    m_Localized: Watch Ads
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813482
+    m_Localized: Are you Sure You Want to reset !
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813483
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429575434813484
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1443839117672448
+    m_Localized: More Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1513916022177792
+    m_Localized: Reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1514433775452160
+    m_Localized: Arabic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1514589916807168
+    m_Localized: English
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1514706531041280
+    m_Localized: Choose a Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1516967462223872
+    m_Localized: Complete Level 20 To UnLock It
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1517705118662656
+    m_Localized: English Vocabulary
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1517955350839296
+    m_Localized: Match Words With Meaning On The Belt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1520902906363904
+    m_Localized: Locked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1793564350136320
+    m_Localized: Hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830401194115072
+    m_Localized: Level Complete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830862710161408
+    m_Localized: Gold Reward -- Pick One Item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1831481680379904
+    m_Localized: Laptop Pro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1831486281531392
+    m_Localized: Mini Robot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1831488563232768
+    m_Localized: Game Console
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1833058449276928
+    m_Localized: RARE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1833108587986944
+    m_Localized: MID
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1834027950063616
+    m_Localized: Claim Laptop Pro!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1834637730562048
+    m_Localized: Your Coin Earned This Level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1835175759101952
+    m_Localized: 12 Coins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1836611687464960
+    m_Localized: Ocean Blue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1836664468586496
+    m_Localized: 'Default theme
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1836715274190848
+    m_Localized: Nature Vibes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1853413603721216
+    m_Localized: choose Theme
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1854552151736320
+    m_Localized: Dark Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1855020378669056
+    m_Localized: COMING SOON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1856839066632192
+    m_Localized: Cherry Blossom
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1856867055222784
+    m_Localized: Unlock at Level 30
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1856940036112384
+    m_Localized: Galaxy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1862514350014464
+    m_Localized: SOLVE THE EQUATION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1862945482522624
+    m_Localized: SOLVE THE Word Puzzle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1888741597167616
+    m_Localized: Reamaining
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

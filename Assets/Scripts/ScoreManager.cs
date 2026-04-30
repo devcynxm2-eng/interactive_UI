@@ -2,20 +2,33 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Settings; // ✅ add this
 
 public class ScoreManager : MonoBehaviour
 {
     [Header("Show Player Score")]
     public TMP_Text Show_Player_Score;
-
     private string scorekey = "Playerscore";
+
+    void OnEnable()
+    {
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged; // ✅
+    }
+
+    void OnDisable()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged; // ✅
+    }
+
+    private void OnLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        updateScoreui(); // ✅ refresh score in new locale
+    }
 
     void Start()
     {
-        // Auto-find if not assigned in Inspector
         if (Show_Player_Score == null)
         {
-            // Try to find it by name in the scene
             GameObject scoreObj = GameObject.Find("Show_Player_Score");
             if (scoreObj != null)
                 Show_Player_Score = scoreObj.GetComponent<TMP_Text>();
@@ -33,7 +46,6 @@ public class ScoreManager : MonoBehaviour
         currentscore += pointtoadd;
         PlayerPrefs.SetInt(scorekey, currentscore);
         PlayerPrefs.Save();
-        Debug.Log("SCORE ADDED: " + currentscore);
         updateScoreui();
     }
 
@@ -44,14 +56,13 @@ public class ScoreManager : MonoBehaviour
         currentscore = Mathf.Max(0, currentscore);
         PlayerPrefs.SetInt(scorekey, currentscore);
         PlayerPrefs.Save();
-        Debug.Log("SCORE AFTER SUBTRACTION: " + currentscore);
         updateScoreui();
     }
 
     public void updateScoreui()
     {
-        if (Show_Player_Score == null) return; // ✅ safe null check
+        if (Show_Player_Score == null) return;
         int currentscore = PlayerPrefs.GetInt(scorekey, 0);
-        Show_Player_Score.text = currentscore.ToString();
+        Show_Player_Score.text = LocalizedNumber.Format(currentscore);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEngine.Localization.Settings;
 
 
 
@@ -107,12 +108,16 @@ public class WordPuzzleManager : MonoBehaviour
         LoadProgress();
 
         // SET TOTAL HERE — currently missing
+        //if (totalWordsText != null)
+        //    totalWordsText.text = allWords.Count.ToString();
+
         if (totalWordsText != null)
-            totalWordsText.text = allWords.Count.ToString();
+            totalWordsText.text = LocalizedNumber.FormatPlain(allWords.Count);
 
         UpdateSlider();
         LoadNextWord();
         scoreManager.updateScoreui();
+        StartCoroutine(InitAfterLocale());
         //allCompletePanel.gameObject.SetActive(false);
     }
 
@@ -176,8 +181,11 @@ public class WordPuzzleManager : MonoBehaviour
         SetupLetterButtons();
 
 
+        //if (wordNumberText != null)
+        //    wordNumberText.text = currentWordIndex.ToString();
+
         if (wordNumberText != null)
-            wordNumberText.text = currentWordIndex.ToString();
+            wordNumberText.text = LocalizedNumber.FormatPlain(currentWordIndex);
     }
 
     void BuildLetterTiles()
@@ -708,7 +716,29 @@ void ShowHintForLetter(char letter)
         PlayerPrefs.SetString("word_progress", json);
         PlayerPrefs.Save();
     }
+    private void OnEnable()
+    {
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
 
+    private void OnDisable()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+
+    private void OnLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        StartCoroutine(RefreshAfterLocaleChange());
+    }
+
+    private IEnumerator RefreshAfterLocaleChange()
+    {
+        yield return null;
+        if (wordNumberText != null)
+            wordNumberText.text = LocalizedNumber.FormatPlain(currentWordIndex);
+        if (totalWordsText != null)
+            totalWordsText.text = LocalizedNumber.FormatPlain(allWords.Count);
+    }
 
     void LoadProgress()
     {
@@ -721,6 +751,15 @@ void ShowHintForLetter(char letter)
         currentWordIndex = data.currentWordIndex;
         globalWordIndex = data.globalWordIndex;
     }
+    private IEnumerator InitAfterLocale()
+    {
+        yield return LocalizationSettings.InitializationOperation;
 
+        if (totalWordsText != null)
+            totalWordsText.text = LocalizedNumber.FormatPlain(allWords.Count);
+
+        if (wordNumberText != null)
+            wordNumberText.text = LocalizedNumber.FormatPlain(currentWordIndex);
+    }
 
 }

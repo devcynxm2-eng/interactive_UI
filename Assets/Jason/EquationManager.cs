@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using UnityEngine.Localization.Settings;
 
 
 
@@ -145,9 +146,28 @@ public class EquationManager : MonoBehaviour
 
         x = globalEquationIndex;
         Debug.Log("--------------instart-----in " + currentEquationIndex);
-
+        StartCoroutine(InitAfterLocale());
     }
 
+   
+       
+
+    private IEnumerator InitAfterLocale()
+    {
+        // ✅ Wait for localization to be ready FIRST
+        yield return LocalizationSettings.InitializationOperation;
+
+        CalculateTotalEquations();
+        if (totalEquationText != null)
+            totalEquationText.text = LocalizedNumber.FormatPlain(totalEquationsInAllJSON);
+
+        LoadProgress();
+        UpdateSlider();
+        LoadJSON(currentJSONIndex);
+
+        x = globalEquationIndex;
+        Debug.Log("--------------instart-----in " + currentEquationIndex);
+    }
     void LoadJSON(int index)
     {
         currentJSONIndex = index;
@@ -366,17 +386,13 @@ public class EquationManager : MonoBehaviour
     {
         List<int> finalNumbers = new List<int>();
 
-        // ✅ SINGLE BLANK MODE
         if (currentEquationLength == 5)
         {
             finalNumbers.Add(currentData.hint_value);
         }
-
-        // ✅ DOUBLE BLANK MODE
         else if (currentEquationLength == 7)
         {
             List<Pair> pairs = currentData.valid_pairs;
-
             if (pairs != null && pairs.Count > 0)
             {
                 for (int i = 0; i < 2; i++)
@@ -388,7 +404,6 @@ public class EquationManager : MonoBehaviour
             }
         }
 
-        // Fill remaining slots
         while (finalNumbers.Count < numberButtons.Length)
         {
             int rand = UnityEngine.Random.Range(0, 25);
@@ -405,14 +420,13 @@ public class EquationManager : MonoBehaviour
             finalNumbers[randIndex] = temp;
         }
 
-        // Assign to buttons
+        // ✅ Assign with localized text
         for (int i = 0; i < numberButtons.Length; i++)
         {
             NumberButton nb = numberButtons[i].GetComponent<NumberButton>();
             TMP_Text txt = numberButtons[i].GetComponentInChildren<TMP_Text>();
             int value = finalNumbers[i];
-            nb.number = value;
-            txt.text = value.ToString();
+            nb.SetNumber(value); // ✅ changed from value.ToString()
         }
     }
 
@@ -671,7 +685,7 @@ public class EquationManager : MonoBehaviour
     void LoadNextEquation()
     {
         if (equationNumberText != null)
-            equationNumberText.text = (globalEquationIndex + 1).ToString();
+            equationNumberText.text = LocalizedNumber.FormatPlain(globalEquationIndex + 1);
 
         Debug.Log("globalEquationIndex = " + globalEquationIndex);
         if (totalsolvedeqText != null)
@@ -804,7 +818,7 @@ public class EquationManager : MonoBehaviour
             TMP_Text targetTxt = targetBtn.GetComponentInChildren<TMP_Text>();
 
             targetNb.number = value;
-            targetTxt.text = value.ToString();
+            targetTxt.text = LocalizedNumber.FormatPlain(value);
 
             Debug.Log($"[EnsureValueOnButton] ✅ Replaced button with blank2 value = {value}");
         }
@@ -835,9 +849,9 @@ public class EquationManager : MonoBehaviour
         blankPrefab.SetBlanksingle();
 
         operatorPrefab.SetOperator(SymbolToEnum(operatorSymbol));
-        operandText.text = knownOperand.ToString();
+        operandText.text = LocalizedNumber.FormatPlain(knownOperand);
         equalPrefab.SetOperator(MathOperator.Equal);
-        answerText.text = currentData.answer.ToString();
+        answerText.text = LocalizedNumber.FormatPlain(currentData.answer);
     }
 
 
@@ -909,11 +923,11 @@ public class EquationManager : MonoBehaviour
 
         // Assign known operands (the constant value)
         if (knownOperands.Count > 0)
-            operandText.text = knownOperands[knownOperands.Count - 1].ToString();
+            operandText.text = LocalizedNumber.FormatPlain(knownOperands[knownOperands.Count - 1]);
 
         // Set equals and answer
         equalPrefab.SetOperator(MathOperator.Equal);
-        answerText.text = currentData.answer.ToString();
+        answerText.text = LocalizedNumber.FormatPlain(currentData.answer);
     }
     public bool TryGetPairMatch(int firstValue, out int secondValue)
     {
@@ -947,7 +961,65 @@ public class EquationManager : MonoBehaviour
         progressSlider.value = Mathf.Clamp01(progress);
     }
 
+    // DELETE ALL OF THIS from Num_Eq.cs
+    private void OnEnable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
 
+    private void OnDisable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+
+    private void OnLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        StartCoroutine(RefreshAfterLocaleChange());
+    }
+
+    private IEnumerator RefreshAfterLocaleChange()
+    {
+        yield return null; // ✅ wait one frame for locale to fully apply
+        RefreshAllNumberDisplays();
+    }
+
+    private void RefreshAllNumberDisplays()
+    {
+        if (numberButtons == null) return;
+
+        // Refresh buttons
+        foreach (Button btn in numberButtons)
+        {
+            if (btn == null) continue;
+            NumberButton nb = btn.GetComponent<NumberButton>();
+            if (nb != null)
+                nb.RefreshText();
+        }
+
+        // Refresh equation texts
+        if (currentData != null)
+        {
+            if (answerText != null)
+                answerText.text = LocalizedNumber.FormatPlain(currentData.answer);
+            if (operandText != null)
+                operandText.text = LocalizedNumber.FormatPlain(currentData.operands[0]);
+        }
+
+        // ✅ Refresh counter texts
+        if (equationNumberText != null)
+            equationNumberText.text = LocalizedNumber.FormatPlain(globalEquationIndex + 1);
+
+        if (totalsolvedeqText != null)
+            totalsolvedeqText.text = LocalizedNumber.FormatPlain(globalEquationIndex);
+
+        if (totalEquationText != null)
+            totalEquationText.text = LocalizedNumber.FormatPlain(totalEquationsInAllJSON);
+
+        if (equationNumberText != null)
+            equationNumberText.text = LocalizedNumber.FormatPlain(globalEquationIndex + 1);
+
+
+    }
     MathOperator SymbolToEnum(string symbol)
     {
         switch (symbol)

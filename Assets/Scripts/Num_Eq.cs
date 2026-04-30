@@ -234,7 +234,7 @@ public class NumEq : MonoBehaviour
             {
                 Debug.Log($"[SelectNumberdouble] REJECTED blank1={number}");
                 SoundManager.Instance.PlayWrong();
-                resultText.text = number.ToString();
+                resultText.text = LocalizedNumber.FormatPlain(number);
                 wrongImage.gameObject.SetActive(true);
                 TriggerShake();
                 Cross_Image.gameObject.SetActive(true);
@@ -284,7 +284,7 @@ public class NumEq : MonoBehaviour
             {
                 SoundManager.Instance.PlayWrong();
                 Debug.Log($"[SelectNumberdouble] REJECTED blank2={number}");
-                resultText2.text = number.ToString();
+                resultText2.text = LocalizedNumber.FormatPlain(number);
                 redonwrong.gameObject.SetActive(true);
                 greencorrectimage.gameObject.SetActive(false);
                 //change_no_Text.SetActive(true);
@@ -298,7 +298,7 @@ public class NumEq : MonoBehaviour
             selectedNumber2 = number;
             redonwrong.gameObject.SetActive(false);
             greencorrectimage.gameObject.SetActive(true);
-            resultText2.text = number.ToString();
+            resultText2.text = LocalizedNumber.FormatPlain(number);
             CurrentBlank = 1;
             Debug.Log($"[SelectNumberdouble] ACCEPTED blank2={number}");
 
@@ -341,7 +341,7 @@ public class NumEq : MonoBehaviour
     {
         if (answered) return;
         selectedNumber = number;
-        CheckAnswer(number.ToString());
+        CheckAnswer(LocalizedNumber.FormatPlain(number));
     }
 
     void CheckAnswer(string text)
@@ -619,9 +619,7 @@ public class NumEq : MonoBehaviour
 
         EquationManager.Instance.ResetAllHints();
     }
-
-
-
+   
     private int CalculateBlank2(int blank1, int target, string op1)
     {
         switch (op1)
@@ -647,6 +645,6 @@ public class NumEq : MonoBehaviour
         ResetBothBlanks();
     }
 
-
+   
 
 }

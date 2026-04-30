@@ -16,8 +16,15 @@ public class PausePanel : MonoBehaviour
     {
         pausePanel.SetActive(false);
         Time.timeScale = 1f;
-    }
 
+        // 🔥 ADD THIS — apply correct font to pause panel
+        if (LanguageSwitcher.Instance != null)
+        {
+            string saved = PlayerPrefs.GetString("SelectedLanguage", "en");
+            LanguageSwitcher.Instance.ApplyFontToAllTexts(saved);
+        }
+    }
+    
     public void OnQuitPressed()
     {
         // ✅ Score comes from PlayerPrefs directly

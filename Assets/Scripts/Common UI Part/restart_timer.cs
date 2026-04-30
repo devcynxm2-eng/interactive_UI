@@ -151,7 +151,7 @@ public class restart_timer : MonoBehaviour
 
         int seconds = Mathf.CeilToInt(remainingTime);
 
-        timerText.text = seconds + "s Remaining";
+        timerText.text = seconds+"";
 
     }
 

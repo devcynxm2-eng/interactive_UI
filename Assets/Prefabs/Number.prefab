@@ -233,8 +233,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8565b0c956f6356419217ad30233e168, type: 2}
+  m_sharedMaterial: {fileID: 7405611109758684954, guid: 8565b0c956f6356419217ad30233e168, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -470,8 +470,6 @@ MonoBehaviour:
   duration: 0.5
   blankImage: {fileID: 6447787480985017023}
   blankImage2: {fileID: 0}
-  completepanel_Txt: {fileID: 0}
-  Completepanel: {fileID: 0}
   greencorrectimage: {fileID: 0}
   correctImage: {fileID: 3236852843341722481}
   correctImage2: {fileID: 0}
@@ -479,16 +477,21 @@ MonoBehaviour:
   resultText: {fileID: 7826727730038684398}
   resultText2: {fileID: 0}
   rectTransform: {fileID: 0}
+  rectTransform2: {fileID: 0}
   redonwrong: {fileID: 0}
+  Cross_Image: {fileID: 0}
+  nextbuttonin_completepanel: {fileID: 0}
   secondNumber: 3
   result: 7
   gamemanager: {fileID: 0}
   progressBarController: {fileID: 0}
   resettimer: {fileID: 6623846487530970899}
-  slideInPosition: {x: 0, y: 0}
-  slideOutPosition: {x: -1000, y: 0}
-  slideDuration: 0.5
+  CurrentBlank: 1
   eqdata: 0
+  hintcheck: 0
+  chknum: 0
+  scoreManager: {fileID: 0}
+  Complete_Panel: {fileID: 0}
 --- !u!1 &8397496648356138489
 GameObject:
   m_ObjectHideFlags: 0
