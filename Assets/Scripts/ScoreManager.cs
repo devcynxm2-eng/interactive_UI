@@ -49,6 +49,8 @@ public class ScoreManager : MonoBehaviour
         updateScoreui();
     }
 
+   
+
     public void Subtractscore(int pointtoadd)
     {
         int currentscore = PlayerPrefs.GetInt(scorekey, 0);
@@ -59,10 +61,13 @@ public class ScoreManager : MonoBehaviour
         updateScoreui();
     }
 
+   
+
     public void updateScoreui()
     {
         if (Show_Player_Score == null) return;
         int currentscore = PlayerPrefs.GetInt(scorekey, 0);
         Show_Player_Score.text = LocalizedNumber.Format(currentscore);
     }
+
 }

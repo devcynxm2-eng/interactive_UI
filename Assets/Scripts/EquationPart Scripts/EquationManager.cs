@@ -12,11 +12,7 @@ using UnityEngine.Localization.Settings;
 
 
 [System.Serializable]
-public class Pair
-{
-    public int a;
-
-}
+public class Pair{    public int a; }
 
 [System.Serializable]
 public class EquationData
@@ -28,7 +24,7 @@ public class EquationData
     public int hint_value;
     public int equation_length;
 
-    // Use List of Pair instead of int[][]
+  
     public List<Pair> valid_pairs;
 
 }
@@ -117,6 +113,14 @@ public class EquationManager : MonoBehaviour
     public Slider progressSlider;
     public int x;
 
+
+    int currentJSONIndex = 0;
+    [Header("UI")]
+    public GameObject wordSolverUI;
+
+
+
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -125,10 +129,7 @@ public class EquationManager : MonoBehaviour
 
 
 
-    int currentJSONIndex = 0;
-    [Header("UI")]
-    public GameObject wordSolverUI;
-
+    
 
     void Start()
     {
@@ -137,7 +138,6 @@ public class EquationManager : MonoBehaviour
         CalculateTotalEquations();
         if (totalEquationText != null)
             totalEquationText.text = totalEquationsInAllJSON.ToString();
-
 
         LoadProgress();
         UpdateSlider();
@@ -183,7 +183,6 @@ public class EquationManager : MonoBehaviour
             return;
         }
 
-
         //Complete_Panel.ResetCompleteUI();
         equationGroups = new List<EquationData>[1]; // only ONE group
 
@@ -193,8 +192,6 @@ public class EquationManager : MonoBehaviour
 
         if (jsonFile == null) return;
 
-
-
         EquationsListWrapper wrapper = JsonUtility.FromJson<EquationsListWrapper>(jsonFile.text);
         currentEquationLength = wrapper.equation_length;
         Debug.Log("============>" + currentEquationLength);
@@ -202,8 +199,6 @@ public class EquationManager : MonoBehaviour
         {
             equationGroups[0].AddRange(wrapper.equations);
         }
-
-
 
         currentGroupIndex = 0;
 
@@ -770,8 +765,6 @@ public class EquationManager : MonoBehaviour
         }
     }
 
-
-
     void AssignDatasingle()
     {
 
@@ -796,17 +789,17 @@ public class EquationManager : MonoBehaviour
         answerText.text = LocalizedNumber.FormatPlain(currentData.answer);
     }
 
+  
+
 
     void AssignDatadouble()
     {
-
 
         // Hide all prefabs initially
         blankPrefab.gameObject.SetActive(false);
         SecondblankPrefab.gameObject.SetActive(false);
         operatorPrefab.gameObject.SetActive(false);
         SecondoperatorPrefab.gameObject.SetActive(false);
-
 
         List<int> blanksIndices = new List<int>();
         List<int> knownOperands = new List<int>();
